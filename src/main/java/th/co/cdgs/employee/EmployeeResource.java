@@ -34,6 +34,7 @@ public class EmployeeResource {
     @Path("{id}")
     public Employee getSingle(Integer id) {
         Employee entity = entityManager.find(Employee.class, id);
+
         if (entity == null) {
             throw new WebApplicationException("employee with id of " + id + " does not exist.",
                     Status.NOT_FOUND);
