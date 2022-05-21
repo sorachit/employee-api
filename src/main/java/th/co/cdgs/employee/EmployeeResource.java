@@ -4,7 +4,9 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,6 +30,38 @@ public class EmployeeResource {
     @GET
     public List<Employee> get() {
         return entityManager.createQuery("from Employee", Employee.class).getResultList();
+    }
+
+    @GET
+    @Path("search")
+    public List<Employee> getByCondition(@BeanParam EmployeeBeanParam condition) {
+        StringBuilder jpql = new StringBuilder("from Employee e where 1=1 ");
+        if (condition.getFirstName() != null) {
+            jpql.append("and e.firstName like :firstName ");
+        }
+        if (condition.getLastName() != null) {
+            jpql.append("and e.lastName like :lastName ");
+        }
+        if (condition.getGender() != null) {
+            jpql.append("and e.gender = :gender ");
+        }
+        if (condition.getDepartment() != null) {
+            jpql.append("and e.department = :department ");
+        }
+        Query query = entityManager.createQuery(jpql.toString(), Employee.class);
+        if (condition.getFirstName() != null) {
+            query.setParameter("firstName", condition.getFirstName());
+        }
+        if (condition.getLastName() != null) {
+            query.setParameter("lastName", condition.getLastName());
+        }
+        if (condition.getGender() != null) {
+            query.setParameter("gender", condition.getGender());
+        }
+        if (condition.getDepartment() != null) {
+            query.setParameter("department", condition.getDepartment());
+        }
+        return query.getResultList();
     }
 
     @GET
