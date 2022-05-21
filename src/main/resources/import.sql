@@ -1,3 +1,14 @@
-INSERT INTO known_fruits(id, name) VALUES (1, 'Cherry');
-INSERT INTO known_fruits(id, name) VALUES (2, 'Apple');
-INSERT INTO known_fruits(id, name) VALUES (3, 'Banana');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (1, 'Tony','Stark','M','DC');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (2, 'Bruce' , 'Wayne' , 'M' , 'DC');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (3, 'Bruce' , 'Banner' , 'M' , 'Mavle');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (4, 'Barry' , 'Allen' , 'M' , 'DC');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (5, 'Diana' , 'Prince' , 'F' , 'DC');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (6, 'Clark' , 'Kent' , 'M' , 'DC');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (7, 'Carol' , 'Danvers' , 'F' , 'Mavle');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (8, 'Steve' , 'Rogers' , 'M' , 'Mavle');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (9, 'Natasha' , 'Romanova' , 'F' , 'Mavle');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (10, 'Stephen' , 'Strange' , 'M' , 'Mavle');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (11, 'Peter' , 'Parker' , 'M' , 'Mavle');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (12, 'Peter' , 'Quill' , 'M' , 'Mavle');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (13, 'Arthur' , 'Curry' , 'M' , 'DC');
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (14, 'Victor' , 'Stone' , 'M' , 'DC');
