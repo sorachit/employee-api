@@ -19,6 +19,16 @@ public class Department {
 
     @Column(length = 100)
     private String name;
+    
+    Department(){
+    	
+    }
+    
+    public Department(Integer code,String name){
+    	this.code = code;
+    	this.name = name;
+    }
+    
 
     public Integer getCode() {
         return code;
