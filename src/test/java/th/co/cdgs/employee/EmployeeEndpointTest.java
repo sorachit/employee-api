@@ -1,4 +1,4 @@
-package org.acme.hibernate.orm;
+package th.co.cdgs.employee;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import io.quarkus.test.junit.QuarkusTest;
-import th.co.cdgs.employee.Employee;
 
 @QuarkusTest
 public class EmployeeEndpointTest {
@@ -66,6 +65,14 @@ public class EmployeeEndpointTest {
                 given().when().body(objectMapper.writeValueAsString(employee))
                                 .contentType("application/json").put("/employee/100").then()
                                 .statusCode(404).body(containsString("Employee with id of 100"));
+        }
+
+
+
+        @Test
+        public void getEmployeeByDepartmentHasTony() {
+                given().when().get("/employee/search?department=DC").then().statusCode(200)
+                                .body(containsString("Tony"));
         }
 
 }
