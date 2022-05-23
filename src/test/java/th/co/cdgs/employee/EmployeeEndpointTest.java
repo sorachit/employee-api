@@ -70,9 +70,9 @@ public class EmployeeEndpointTest {
 
 
         @Test
-        public void getEmployeeByDepartmentHasTony() {
+        public void getEmployeeByDepartmentHasClark() {
                 given().when().get("/employee/search?department=DC").then().statusCode(200)
-                                .body(containsString("Tony"));
+                                .body(containsString("Clark"));
         }
 
 }
