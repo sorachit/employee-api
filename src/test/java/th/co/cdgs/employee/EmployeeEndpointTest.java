@@ -1,4 +1,4 @@
-package org.acme.hibernate.orm;
+package th.co.cdgs.employee;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -69,4 +69,10 @@ public class EmployeeEndpointTest {
                                 .statusCode(404).body(containsString("Employee with id of 100"));
         }
 
+
+        @Test
+        public void getEmployeeByDepartmentHasClark() {
+                given().when().get("/employee/search?department=2").then().statusCode(200)
+                                .body(containsString("Clark"));
+        }
 }
