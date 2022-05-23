@@ -58,7 +58,7 @@ public class EmployeeResource {
             jpql.append("and e.gender = :gender ");
         }
         if (condition.getDepartment() != null) {
-            jpql.append("and e.department = :department ");
+            jpql.append("and e.department.code = :department ");
         }
         Query query = entityManager.createQuery(jpql.toString(), Employee.class);
         if (condition.getFirstName() != null) {
