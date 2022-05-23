@@ -16,7 +16,7 @@ public class EmployeeBeanParam {
     private String gender;
 
     @QueryParam(value = "department")
-    private Integer department;
+    private String department;
 
     public String getFirstName() {
         return firstName;
@@ -42,11 +42,11 @@ public class EmployeeBeanParam {
         this.gender = gender;
     }
 
-    public Integer getDepartment() {
+    public String getDepartment() {
         return department;
     }
 
-    public void setDepartment(Integer department) {
+    public void setDepartment(String department) {
         this.department = department;
     }
 
