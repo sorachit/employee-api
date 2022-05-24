@@ -11,53 +11,53 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 public class FruitsEndpointTest {
 
-    @Test
-    public void testListAllFruits() {
-        //List all, should have all 3 fruits the database has initially:
-        given()
-                .when().get("/fruits")
-                .then()
-                .statusCode(200)
-                .body(
-                        containsString("Cherry"),
-                        containsString("Apple"),
-                        containsString("Banana"));
+	@Test
+	public void testListAllFruits() {
+		// List all, should have all 3 fruits the database has initially:
+		given().when().get("/fruits").then().statusCode(200).body(containsString("Cherry"), containsString("Apple"),
+				containsString("Banana"));
+	}
 
-        //Delete the Cherry:
-        given()
-                .when().delete("/fruits/1")
-                .then()
-                .statusCode(204);
+	@Test
+	public void getListAllFruitsAmount() {
+		// List all, should have all 3 fruits the database has initially:
+		given().when().get("/fruits/basket").then().statusCode(200).body(containsString("Cherry"), containsString("Apple"),
+				containsString("Banana"),containsString("100"));
+	}
 
-        //List all, cherry should be missing now:
-        given()
-                .when().get("/fruits")
-                .then()
-                .statusCode(200)
-                .body(
-                        not(containsString("Cherry")),
-                        containsString("Apple"),
-                        containsString("Banana"));
+	@Test
+	public void findFruitsByIdShouldBeCherry() {
+		given().when().get("/fruits/1").then().statusCode(200).body(containsString("Cherry"));
+	}
 
-        //Create the Pear:
-        given()
-                .when()
-                .body("{\"name\" : \"Pear\"}")
-                .contentType("application/json")
-                .post("/fruits")
-                .then()
-                .statusCode(201);
+	@Test
+	public void createFruitsShouldBeGetPear() {
+		// Create the Pear:
+		given().when().body("{\"name\" : \"Pear\"}").contentType("application/json").post("/fruits").then()
+				.statusCode(201);
 
-        //List all, cherry should be missing now:
-        given()
-                .when().get("/fruits")
-                .then()
-                .statusCode(200)
-                .body(
-                        not(containsString("Cherry")),
-                        containsString("Apple"),
-                        containsString("Banana"),
-                        containsString("Pear"));
-    }
+		given().when().get("/fruits/10").then().statusCode(200).body(containsString("Pear"));
+	}
+
+	@Test
+	public void updateFruitsShouldBeGetPear() {
+		// Create the Pear:
+		given().when().body("{\"name\" : \"Pear\"}").contentType("application/json").put("/fruits/1").then()
+				.statusCode(200);
+
+		given().when().get("/fruits/1").then().statusCode(200).body(containsString("Pear"));
+	}
+
+	@Test
+	public void deleteFruits() {
+
+		// Delete the Cherry:
+		given().when().delete("/fruits/1").then().statusCode(204);
+
+		// List all, cherry should be missing now:
+		given().when().get("/fruits").then().statusCode(200).body(not(containsString("Cherry")),
+				containsString("Apple"), containsString("Banana"));
+
+	}
 
 }

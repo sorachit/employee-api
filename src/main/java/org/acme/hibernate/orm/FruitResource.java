@@ -1,5 +1,6 @@
 package org.acme.hibernate.orm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -33,11 +34,44 @@ public class FruitResource {
 
     @Inject
     EntityManager entityManager;
+    
+    
+    @GET
+    @Path("basket")
+    public List<FruitAmount> getBasket() {
+    	String sql = "SELECT f.id , f.name , b.amount "
+    			+ " FROM known_fruits f "
+    			+ " left join basket b on f.id = b.fruits_id "
+    			+ " ORDER BY f.name";
+    	
+    	List<Object[]> objects = entityManager.createNativeQuery(sql).getResultList();
+    	List<FruitAmount> fruits = new ArrayList<>();
+    	for(Object[] object : objects) {
+    		FruitAmount fruit = new FruitAmount();
+    		fruit.setId((Integer)object[0]);
+    		fruit.setName((String)object[1]);
+    		fruit.setAmount((Integer)object[2]);
+    		fruits.add(fruit);
+    	}
+    	return fruits;
+    }
 
     @GET
     public List<Fruit> get() {
-        return entityManager.createNamedQuery("Fruits.findAll", Fruit.class)
-                .getResultList();
+        // return entityManager.createNamedQuery("Fruits.findAll", Fruit.class).getResultList();
+    	
+    	
+//    	List<Object[]> objects = entityManager.createNativeQuery("SELECT id , name FROM known_fruits f ORDER BY f.name").getResultList();
+//    	List<Fruit> fruits = new ArrayList<>();
+//    	for(Object[] object : objects) {
+//    		Fruit fruit = new Fruit();
+//    		fruit.setId((Integer)object[0]);
+//    		fruit.setName((String)object[1]);
+//    		fruits.add(fruit);
+//    	}
+//    	return fruits;
+    	
+    	return entityManager.createQuery("SELECT f FROM Fruit f ORDER BY f.name", Fruit.class).getResultList();
     }
 
     @GET
