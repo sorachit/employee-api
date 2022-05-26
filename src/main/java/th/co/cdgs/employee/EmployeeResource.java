@@ -80,8 +80,7 @@ public class EmployeeResource {
     @Transactional
     public Response create(Employee employee) {
         if (employee.getId() != null) {
-            throw new WebApplicationException("Id was invalidly set on request.",
-                    Status.BAD_REQUEST);
+            employee.setId(null);
         }
         entityManager.persist(employee);
         return Response.status(Status.CREATED).entity(employee).build();
@@ -113,6 +112,20 @@ public class EmployeeResource {
                     Status.NOT_FOUND);
         }
         entityManager.remove(entity);
+        return Response.ok().build();
+    }
+
+    @DELETE
+    @Transactional
+    public Response deleteList(List<Integer> ids) {
+        for (Integer id : ids) {
+            Employee entity = entityManager.getReference(Employee.class, id);
+            if (entity == null) {
+                throw new WebApplicationException("Employee with id of " + id + " does not exist.",
+                        Status.NOT_FOUND);
+            }
+            entityManager.remove(entity);
+        }
         return Response.ok().build();
     }
 }
