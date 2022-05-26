@@ -2,6 +2,7 @@ INSERT INTO known_fruits(id, name) VALUES (1, 'Cherry');
 INSERT INTO known_fruits(id, name) VALUES (2, 'Apple');
 INSERT INTO known_fruits(id, name) VALUES (3, 'Banana');
 
+DROP TABLE IF EXISTS BASKET;
 CREATE TABLE BASKET (
     id int,
     fruits_id int,
