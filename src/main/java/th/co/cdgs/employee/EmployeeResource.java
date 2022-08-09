@@ -43,6 +43,38 @@ public class EmployeeResource {
         }
         return entity;
     }
+    
+    @GET
+    @Path("nativeQuery")
+    public List<Employee> nativeQuery(@BeanParam EmployeeBeanParam condition) {
+        StringBuilder jpql = new StringBuilder("select id, first_name,last_name,gender,department from employee where 1=1 ");
+        if (condition.getFirstName() != null) {
+            jpql.append("and first_name like :firstName ");
+        }
+        if (condition.getLastName() != null) {
+            jpql.append("and last_name like :lastName ");
+        }
+        if (condition.getGender() != null) {
+            jpql.append("and gender = :gender ");
+        }
+        if (condition.getDepartment() != null) {
+            jpql.append("and department = :department ");
+        }
+        Query query = entityManager.createNativeQuery(jpql.toString(), Employee.class);
+        if (condition.getFirstName() != null) {
+            query.setParameter("firstName", condition.getFirstName());
+        }
+        if (condition.getLastName() != null) {
+            query.setParameter("lastName", condition.getLastName());
+        }
+        if (condition.getGender() != null) {
+            query.setParameter("gender", condition.getGender());
+        }
+        if (condition.getDepartment() != null) {
+            query.setParameter("department", condition.getDepartment());
+        }
+        return query.getResultList();
+    }
 
     @GET
     @Path("search")
