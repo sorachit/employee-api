@@ -129,7 +129,7 @@ public class EmployeeResource {
             throw new WebApplicationException("Employee with id of " + id + " does not exist.",
                     Status.NOT_FOUND);
         }
-        employeeService.update(entity, employee);
+        entity = employeeService.update(entity, employee);
         return Response.ok(entity).build();
     }
 
