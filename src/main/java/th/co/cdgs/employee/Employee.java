@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Version;
+
 import th.co.cdgs.department.Department;
 
 @Entity
@@ -33,6 +35,9 @@ public class Employee {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "department")
     private Department department;
+    
+    @Version
+    private Integer version;
 
     public Integer getId() {
         return id;
@@ -73,6 +78,14 @@ public class Employee {
     public void setDepartment(Department department) {
         this.department = department;
     }
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 
 
 }

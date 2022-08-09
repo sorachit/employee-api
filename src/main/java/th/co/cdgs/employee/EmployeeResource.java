@@ -23,6 +23,9 @@ import javax.ws.rs.core.Response.Status;
 @Produces("application/json")
 @Consumes("application/json")
 public class EmployeeResource {
+	
+	@Inject
+	EmployeeService employeeService;
 
     @Inject
     EntityManager entityManager;
@@ -120,17 +123,13 @@ public class EmployeeResource {
 
     @PUT
     @Path("{id}")
-    @Transactional
     public Response update(Integer id, Employee employee) {
         Employee entity = entityManager.find(Employee.class, id);
         if (entity == null) {
             throw new WebApplicationException("Employee with id of " + id + " does not exist.",
                     Status.NOT_FOUND);
         }
-        entity.setDepartment(employee.getDepartment());
-        entity.setFirstName(employee.getFirstName());
-        entity.setLastName(employee.getLastName());
-        entity.setGender(employee.getGender());
+        employeeService.update(entity, employee);
         return Response.ok(entity).build();
     }
 
