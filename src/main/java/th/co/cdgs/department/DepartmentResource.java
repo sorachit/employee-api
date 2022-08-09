@@ -39,6 +39,19 @@ public class DepartmentResource {
         return entityManager.createQuery("from DepartmentEmp", DepartmentEmp.class).getResultList();
     }
     
+    
+    @GET
+    @Path("{id}")
+    public Department getSingle(Integer id) {
+    	Department entity = entityManager.find(Department.class, id);
+
+        if (entity == null) {
+            throw new WebApplicationException("employee with id of " + id + " does not exist.",
+                    Status.NOT_FOUND);
+        }
+        return entity;
+    }
+    
     @DELETE
     @Path("{id}")
     @Transactional
