@@ -1,5 +1,6 @@
 package th.co.cdgs.employee;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -17,6 +18,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import th.co.cdgs.department.Department;
 
 @Path("employee")
 @ApplicationScoped
@@ -46,8 +49,13 @@ public class EmployeeResource {
     
     @GET
     @Path("nativeQuery")
-    public List<Employee> nativeQuery(@BeanParam EmployeeBeanParam condition) {
-        StringBuilder jpql = new StringBuilder("select id, first_name,last_name,gender,department from employee where 1=1 ");
+    public List<EmployeeBean> nativeQuery(@BeanParam EmployeeBeanParam condition) {
+        StringBuilder jpql = new StringBuilder(
+        		" select e.id, e.first_name,e.last_name,e.gender "
+        		+ " ,d.code , d.name "
+        		+ " from employee e "
+        		+ " left join department d on e.department = d.code "
+        		+ " where 1=1 ");
         if (condition.getFirstName() != null) {
             jpql.append("and first_name like :firstName ");
         }
@@ -60,7 +68,7 @@ public class EmployeeResource {
         if (condition.getDepartment() != null) {
             jpql.append("and department = :department ");
         }
-        Query query = entityManager.createNativeQuery(jpql.toString(), Employee.class);
+        Query query = entityManager.createNativeQuery(jpql.toString());
         if (condition.getFirstName() != null) {
             query.setParameter("firstName", condition.getFirstName());
         }
@@ -73,7 +81,19 @@ public class EmployeeResource {
         if (condition.getDepartment() != null) {
             query.setParameter("department", condition.getDepartment());
         }
-        return query.getResultList();
+        List<EmployeeBean> result = new ArrayList<>();
+        List<Object[]> list = query.getResultList();
+        for(Object[] obj : list) {
+        	EmployeeBean emp = new EmployeeBean();
+        	emp.setId((Integer)obj[0]);
+        	emp.setFirstName((String)obj[1]);
+        	emp.setLastName((String)obj[2]);
+        	emp.setGender((String)obj[3]);
+        	Department dep = new Department((Integer)obj[4], (String)obj[5]);
+        	emp.setDepartment(dep);
+        	result.add(emp);
+        }
+        return result;
     }
 
     @GET
