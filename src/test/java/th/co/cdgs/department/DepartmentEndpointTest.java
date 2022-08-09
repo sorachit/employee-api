@@ -9,13 +9,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 public class DepartmentEndpointTest {
-	
-	@Test
-    public void getDepartmentByIdHasMavel() {
-            given().when().get("/department/1").then().statusCode(200)
-                            .body(containsString("Mavel"));
-    }
-	
+		
 	@Test
     public void deleteDepartmentAndEmployeeShouldBeFoundMavelAndTony() {
         given().when().delete("/department/2").then().statusCode(200);
