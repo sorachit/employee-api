@@ -22,5 +22,14 @@ public class DepartmentResource {
     public List<Department> get() {
         return entityManager.createQuery("from Department", Department.class).getResultList();
     }
+    
+    @GET
+    @Path("emp")
+    public List<DepartmentEmp> getDepartmentEmp() {
+        return entityManager.createQuery("from DepartmentEmp", DepartmentEmp.class).getResultList();
+    }
+    
+
+
 
 }
