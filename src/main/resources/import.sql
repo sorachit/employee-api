@@ -16,3 +16,7 @@ INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (12, 'Pe
 INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (13, 'Arthur' , 'Curry' , 'M' , 2);
 INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (14, 'Victor' , 'Stone' , 'M' , 2);
 
+INSERT INTO ability(id , power , employee) VALUES (1 , 'Rich' , 1);
+
+
+    
