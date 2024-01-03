@@ -9,15 +9,10 @@ import jakarta.ws.rs.core.MediaType;
 
 @Path("pahtParam")
 @ApplicationScoped
-
 public class PathParamResource {
-
-
     @GET
     @Path("{name}")
-    @Produces(MediaType.TEXT_PLAIN)
     public String getHelloName(@PathParam("name") String name) {
         return "Hello " + name;
     }
-
 }
