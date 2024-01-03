@@ -1,24 +1,17 @@
 package th.co.cdgs;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
-@Path("hello")
+@Path("pahtParam")
 @ApplicationScoped
 
-public class HelloResource {
+public class PathParamResource {
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getHello() {
-        return "Hello Quarkus";
-    }
 
     @GET
     @Path("{name}")
@@ -27,10 +20,4 @@ public class HelloResource {
         return "Hello " + name;
     }
 
-    @GET
-    @Path("/query")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getHello(@QueryParam("name") String name) {
-        return "Hello " + name;
-    }
 }

@@ -13,8 +13,10 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
@@ -26,8 +28,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Path("fruits")
 @ApplicationScoped
-@Produces("application/json")
-@Consumes("application/json")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class FruitResource {
 
     
@@ -44,7 +46,7 @@ public class FruitResource {
 
     @GET
     @Path("{id}")
-    public Fruit getSingle(Integer id) {
+    public Fruit getSingle(@PathParam("id") Integer id) {
         Fruit entity = entityManager.find(Fruit.class, id);
         if (entity == null) {
             throw new WebApplicationException("Fruit with id of " + id + " does not exist.", 404);
@@ -54,6 +56,7 @@ public class FruitResource {
 
     @POST
     @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response create(Fruit fruit) {
         if (fruit.getId() != null) {
             throw new WebApplicationException("Id was invalidly set on request.", 422);
