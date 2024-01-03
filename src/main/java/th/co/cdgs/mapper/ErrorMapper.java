@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.OptimisticLockException;
-import javax.persistence.PersistenceException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.PersistenceException;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
 import io.quarkus.logging.Log;
 
@@ -41,9 +41,9 @@ public class ErrorMapper implements ExceptionMapper<Exception> {
     	if (childCase instanceof SQLException) {
     		Log.error("getErrorCode = " +((SQLException) childCase).getErrorCode());
     		messages.put("message", "SQLException code="+((SQLException) childCase).getErrorCode());
-    	}else if (childCase instanceof javax.persistence.OptimisticLockException) {
+    	}else if (childCase instanceof jakarta.persistence.OptimisticLockException) {
     		messages.put("message", "OptimisticLock");
-		} else if (childCase instanceof javax.persistence.PersistenceException
+		} else if (childCase instanceof jakarta.persistence.PersistenceException
 				&& childCase.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
 			messages.put("message", "Referential integrity constraint violation");
 		} else {
