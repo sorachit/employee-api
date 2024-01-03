@@ -3,21 +3,21 @@ package org.acme.hibernate.orm;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
 import org.jboss.logging.Logger;
 
@@ -30,48 +30,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Consumes("application/json")
 public class FruitResource {
 
+    
     private static final Logger LOGGER = Logger.getLogger(FruitResource.class.getName());
 
     @Inject
     EntityManager entityManager;
-    
-    
-    @GET
-    @Path("basket")
-    public List<FruitAmount> getBasket() {
-    	String sql = "SELECT f.id , f.name , b.amount "
-    			+ " FROM known_fruits f "
-    			+ " left join basket b on f.id = b.fruits_id "
-    			+ " ORDER BY f.name";
-    	
-    	List<Object[]> objects = entityManager.createNativeQuery(sql).getResultList();
-    	List<FruitAmount> fruits = new ArrayList<>();
-    	for(Object[] object : objects) {
-    		FruitAmount fruit = new FruitAmount();
-    		fruit.setId((Integer)object[0]);
-    		fruit.setName((String)object[1]);
-    		fruit.setAmount((Integer)object[2]);
-    		fruits.add(fruit);
-    	}
-    	return fruits;
-    }
 
     @GET
     public List<Fruit> get() {
-        // return entityManager.createNamedQuery("Fruits.findAll", Fruit.class).getResultList();
-    	
-    	
-//    	List<Object[]> objects = entityManager.createNativeQuery("SELECT id , name FROM known_fruits f ORDER BY f.name").getResultList();
-//    	List<Fruit> fruits = new ArrayList<>();
-//    	for(Object[] object : objects) {
-//    		Fruit fruit = new Fruit();
-//    		fruit.setId((Integer)object[0]);
-//    		fruit.setName((String)object[1]);
-//    		fruits.add(fruit);
-//    	}
-//    	return fruits;
-    	
-    	return entityManager.createQuery("SELECT f FROM Fruit f ORDER BY f.name", Fruit.class).getResultList();
+        return entityManager.createNamedQuery("Fruits.findAll", Fruit.class)
+                .getResultList();
     }
 
     @GET
