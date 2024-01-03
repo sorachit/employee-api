@@ -2,9 +2,9 @@ package th.co.cdgs.department;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import th.co.cdgs.employee.Employee;
 
