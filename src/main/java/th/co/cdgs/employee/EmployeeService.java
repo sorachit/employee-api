@@ -2,12 +2,12 @@ package th.co.cdgs.employee;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 
 import io.quarkus.logging.Log;
 
