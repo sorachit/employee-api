@@ -1,9 +1,10 @@
-package th.co.cdgs.upload;
+package th.co.cdgs;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,12 +35,10 @@ public class MultipartResource {
                                 : value.getValue().length(),
                         value.getCharset(), value.getFileName(), value.isFileItem(),
                         value.getHeaders()));
-                System.out.println(value.getFileItem());
-                Files.createFile(Paths.get("upload" + File.separator + value.getFileName()));
+                Files.copy(value.getFileItem().getInputStream(), Paths.get(value.getFileName()),
+                        StandardCopyOption.REPLACE_EXISTING);
             }
-
         }
-
         return items;
     }
 
