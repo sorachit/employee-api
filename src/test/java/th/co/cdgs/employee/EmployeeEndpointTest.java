@@ -2,30 +2,29 @@ package th.co.cdgs.employee;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
+import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
 import io.quarkus.test.junit.QuarkusTest;
 import th.co.cdgs.department.Department;
-import th.co.cdgs.employee.Employee;
 
 @QuarkusTest
-public class EmployeeEndpointTest {
+class EmployeeEndpointTest {
 
         @Test
-        public void getEmployeeHasTonyAndSteve() {
+        void getEmployeeHasTonyAndSteve() {
                 given().when().get("/employee").then().statusCode(200).body(containsString("Tony"),
                                 containsString("Steve"));
         }
 
         @Test
-        public void getEmployeeByIdHasTony() {
+        void getEmployeeByIdHasTony() {
                 given().when().get("/employee/1").then().statusCode(200)
                                 .body(containsString("Tony"));
         }
 
         @Test
-        public void createThoeStatusShouldCreated() throws JsonProcessingException {
+        void createThoeStatusShouldCreated() throws JsonProcessingException {
                 Employee employee = new Employee();
                 employee.setFirstName("Thor");
                 given().when().body(new ObjectMapper().writeValueAsString(employee))
@@ -34,7 +33,7 @@ public class EmployeeEndpointTest {
         }
 
         @Test
-        public void deleteTonyShouldFindGetStatus404() {
+        void deleteTonyShouldFindGetStatus404() {
                 given().when().delete("/employee/14").then().statusCode(200);
                 given().when().get("/employee/14").then().statusCode(404);
         }
@@ -42,7 +41,7 @@ public class EmployeeEndpointTest {
 
 
         @Test
-        public void updateBruceToMavelShouldGetMavel() throws JsonProcessingException {
+        void updateBruceToMavelShouldGetMavel() throws JsonProcessingException {
                 Employee employee = new Employee();
                 employee.setId(2);
                 employee.setFirstName("Bruce");
@@ -59,7 +58,7 @@ public class EmployeeEndpointTest {
 
 
         @Test
-        public void putNoIdShouldException() throws JsonProcessingException {
+        void putNoIdShouldException() throws JsonProcessingException {
                 Employee employee = new Employee();
                 employee.setId(2);
                 employee.setDepartment(new Department(1, "Mavel"));
@@ -71,7 +70,7 @@ public class EmployeeEndpointTest {
 
 
         @Test
-        public void getEmployeeByDepartmentHasClark() {
+        void getEmployeeByDepartmentHasClark() {
                 given().when().get("/employee/search?department=2").then().statusCode(200)
                                 .body(containsString("Clark"));
         }
