@@ -8,22 +8,22 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-public class EmployeeEndpointTest {
+class EmployeeEndpointTest {
 
         @Test
-        public void getEmployeeHasTonyAndSteve() {
+        void getEmployeeHasTonyAndSteve() {
                 given().when().get("/employee").then().statusCode(200).body(containsString("Tony"),
                                 containsString("Steve"));
         }
 
         @Test
-        public void getEmployeeByIdHasTony() {
+        void getEmployeeByIdHasTony() {
                 given().when().get("/employee/1").then().statusCode(200)
                                 .body(containsString("Tony"));
         }
 
         @Test
-        public void createThoeStatusShouldCreated() throws JsonProcessingException {
+        void createThoeStatusShouldCreated() throws JsonProcessingException {
                 Employee employee = new Employee();
                 employee.setFirstName("Thor");
                 given().when().body(new ObjectMapper().writeValueAsString(employee))
@@ -32,7 +32,7 @@ public class EmployeeEndpointTest {
         }
 
         @Test
-        public void deleteTonyShouldFindGetStatus404() {
+        void deleteTonyShouldFindGetStatus404() {
                 given().when().delete("/employee/14").then().statusCode(200);
                 given().when().get("/employee/14").then().statusCode(404);
         }
@@ -40,7 +40,7 @@ public class EmployeeEndpointTest {
 
 
         @Test
-        public void updateBruceToMavelShouldGetMavel() throws JsonProcessingException {
+        void updateBruceToMavelShouldGetMavel() throws JsonProcessingException {
                 Employee employee = new Employee();
                 employee.setId(2);
                 employee.setFirstName("Bruce");
@@ -57,7 +57,7 @@ public class EmployeeEndpointTest {
 
 
         @Test
-        public void putNoIdShouldException() throws JsonProcessingException {
+        void putNoIdShouldException() throws JsonProcessingException {
                 Employee employee = new Employee();
                 employee.setId(2);
                 employee.setDepartment("Mavel");
@@ -70,8 +70,14 @@ public class EmployeeEndpointTest {
 
 
         @Test
-        public void getEmployeeByDepartmentHasClark() {
+        void getEmployeeByDepartmentHasClark() {
                 given().when().get("/employee/search?department=DC").then().statusCode(200)
+                                .body(containsString("Clark"));
+        }
+
+        @Test
+        void searchByNativeQueryGetEmployeeByDepartmentHasClark() {
+                given().when().get("/employee/searchByNativeSql?department=DC").then().statusCode(200)
                                 .body(containsString("Clark"));
         }
 

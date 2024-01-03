@@ -1,6 +1,6 @@
 package th.co.cdgs.employee;
 
-import javax.ws.rs.QueryParam;
+import jakarta.ws.rs.QueryParam;
 
 
 public class EmployeeBeanParam {
