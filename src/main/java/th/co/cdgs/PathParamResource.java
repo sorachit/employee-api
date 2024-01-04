@@ -7,7 +7,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-@Path("pahtParam")
+@Path("pathParam")
 @ApplicationScoped
 public class PathParamResource {
     @GET
