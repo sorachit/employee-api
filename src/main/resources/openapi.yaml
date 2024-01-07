@@ -1,0 +1,358 @@
+---
+openapi: 3.0.3
+info:
+  title: employee-api API
+  version: 1.0.0-SNAPSHOT
+paths:
+  /api/dateTime/add45Date:
+    post:
+      tags:
+      - Date Time Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DateTimeRequest'
+      responses:
+        "200":
+          description: OK
+  /api/dateTime/currentDate:
+    get:
+      tags:
+      - Date Time Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Date'
+  /api/fruits:
+    get:
+      tags:
+      - Fruit Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Fruit'
+    post:
+      tags:
+      - Fruit Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fruit'
+      responses:
+        "200":
+          description: OK
+  /api/fruits/{id}:
+    get:
+      tags:
+      - Fruit Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fruit'
+    put:
+      tags:
+      - Fruit Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int32
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fruit'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fruit'
+    delete:
+      tags:
+      - Fruit Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /api/hello:
+    get:
+      tags:
+      - Hello Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/jsonBody:
+    post:
+      tags:
+      - Json Body Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/jsonResponse:
+    post:
+      tags:
+      - Json Response Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /api/pathParam/{name}:
+    get:
+      tags:
+      - Path Param Resource
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/queryParam:
+    get:
+      tags:
+      - Query Param Resource
+      parameters:
+      - name: firstName
+        in: query
+        schema:
+          type: string
+      - name: lastName
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/responseStatus:
+    post:
+      tags:
+      - Response Status Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+      responses:
+        "200":
+          description: OK
+  /api/upload:
+    post:
+      tags:
+      - Multipart Resource
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MultipartFormDataInput'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+components:
+  schemas:
+    Date:
+      format: date
+      type: string
+      example: 2022-03-10
+    DateTimeRequest:
+      type: object
+      properties:
+        inputDate:
+          $ref: '#/components/schemas/Date'
+    FileItem:
+      type: object
+      properties:
+        inMemory:
+          type: boolean
+        file:
+          $ref: '#/components/schemas/Path'
+        fileSize:
+          format: int64
+          type: integer
+        inputStream:
+          format: binary
+          type: string
+    FileStore:
+      type: object
+      properties:
+        readOnly:
+          type: boolean
+        totalSpace:
+          format: int64
+          type: integer
+        usableSpace:
+          format: int64
+          type: integer
+        unallocatedSpace:
+          format: int64
+          type: integer
+        blockSize:
+          format: int64
+          type: integer
+    FileSystem:
+      type: object
+      properties:
+        open:
+          type: boolean
+        readOnly:
+          type: boolean
+        separator:
+          type: string
+        rootDirectories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Path'
+        fileStores:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileStore'
+        userPrincipalLookupService:
+          $ref: '#/components/schemas/UserPrincipalLookupService'
+    FormValue:
+      type: object
+      properties:
+        value:
+          type: string
+        charset:
+          type: string
+        fileItem:
+          $ref: '#/components/schemas/FileItem'
+        fileName:
+          type: string
+        headers:
+          $ref: '#/components/schemas/MultivaluedMapStringString'
+    Fruit:
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        name:
+          type: string
+    Item:
+      type: object
+      properties:
+        name:
+          type: string
+        size:
+          format: int64
+          type: integer
+        charset:
+          type: string
+        fileName:
+          type: string
+        isFileItem:
+          type: boolean
+        headers:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    MultipartFormDataInput:
+      type: object
+      properties:
+        values:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FormValue'
+    MultivaluedMapStringString:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    Path:
+      type: object
+      properties:
+        fileSystem:
+          $ref: '#/components/schemas/FileSystem'
+        absolute:
+          type: boolean
+        root:
+          $ref: '#/components/schemas/Path'
+        fileName:
+          $ref: '#/components/schemas/Path'
+        parent:
+          $ref: '#/components/schemas/Path'
+        nameCount:
+          format: int32
+          type: integer
+    UserPrincipalLookupService:
+      type: object
