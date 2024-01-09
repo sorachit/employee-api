@@ -14,6 +14,7 @@ import th.co.cdgs.department.Department;
 
 @QuarkusTest
 class EmployeeEndpointTest {
+        
 
         @Test
         void getEmployeeHasTonyAndSteve() throws JsonMappingException, JsonProcessingException {
@@ -43,9 +44,13 @@ class EmployeeEndpointTest {
         }
 
         @Test
-        void getEmployeeByIdHasTony() {
-                given().when().get("/employee/1").then().statusCode(200)
-                                .body(containsString("Tony"));
+        void getEmployeeByIdHasTony() throws JsonMappingException, JsonProcessingException {
+                Response response = given().when().get("/employee/1").then().extract().response();
+                assertEquals(200, response.statusCode());
+                ObjectMapper objectMapper = new ObjectMapper();
+                Employee employee = objectMapper.readValue(response.body().asString(),
+                                Employee.class);
+                assertEquals("Tony", employee.getFirstName());
         }
 
         @Test
