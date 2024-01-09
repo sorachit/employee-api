@@ -44,8 +44,8 @@ class VersionTest {
                                 .contentType("application/json").put("/employee/2").then().extract()
                                 .response();
                 assertEquals(500, response.statusCode());
-                assertEquals("jakarta.persistence.OptimisticLockException",
-                                response.body().jsonPath().getString("exceptionType"));
+                assertEquals("ไม่สามารถแก้ไขข้อมูลได้ เนื่องจาก ข้อมูลถูกแก้ไขด้วยผู้อื่น",
+                                response.body().jsonPath().getString("message"));
         }
 
         @Test
@@ -72,8 +72,8 @@ class VersionTest {
                                 .contentType("application/json").patch("/employee/2").then().extract()
                                 .response();
                 assertEquals(500, response.statusCode());
-                assertEquals("jakarta.persistence.OptimisticLockException",
-                                response.body().jsonPath().getString("exceptionType"));
+                assertEquals("ไม่สามารถแก้ไขข้อมูลได้ เนื่องจาก ข้อมูลถูกแก้ไขด้วยผู้อื่น",
+                                response.body().jsonPath().getString("message"));
         }
 
 }
