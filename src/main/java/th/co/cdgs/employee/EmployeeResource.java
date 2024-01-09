@@ -23,9 +23,9 @@ import jakarta.ws.rs.core.Response.Status;
 @Produces("application/json")
 @Consumes("application/json")
 public class EmployeeResource {
-	
-	@Inject
-	EmployeeService employeeService;
+
+    @Inject
+    EmployeeService employeeService;
 
     @Inject
     EntityManager entityManager;
@@ -46,11 +46,12 @@ public class EmployeeResource {
         }
         return entity;
     }
-    
+
     @GET
     @Path("nativeQuery")
     public List<Employee> nativeQuery(@BeanParam EmployeeBeanParam condition) {
-        StringBuilder jpql = new StringBuilder("select id, first_name,last_name,gender,department from employee where 1=1 ");
+        StringBuilder jpql = new StringBuilder(
+                "select id, first_name,last_name,gender,department from employee where 1=1 ");
         if (condition.getFirstName() != null) {
             jpql.append("and first_name like :firstName ");
         }
@@ -125,13 +126,7 @@ public class EmployeeResource {
     @PUT
     @Path("{id}")
     public Response update(Integer id, Employee employee) {
-        // Employee entity = employeeService.findEmployee(id);
-        // if (entity == null) {
-        //     throw new WebApplicationException("Employee with id of " + id + " does not exist.",
-        //             Status.NOT_FOUND);
-        // }
-        
-       Employee entity = entityManager.merge(employee);
+        Employee entity = entityManager.merge(employee);
         return Response.ok(entity).build();
     }
 
