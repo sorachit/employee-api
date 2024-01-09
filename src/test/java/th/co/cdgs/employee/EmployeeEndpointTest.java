@@ -3,6 +3,7 @@ package th.co.cdgs.employee;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -26,9 +27,13 @@ class EmployeeEndpointTest {
                         switch (employee.getId()) {
                                 case 1:
                                         assertEquals("Tony", employee.getFirstName());
+                                        assertNotNull(employee.getDepartment());
+                                        assertEquals("Mavel", employee.getDepartment().getName());
                                         break;
                                 case 2:
                                         assertEquals("Bruce", employee.getFirstName());
+                                        assertNotNull(employee.getDepartment());
+                                        assertEquals("DC", employee.getDepartment().getName());
                                         break;
                                 default:
                                         break;
@@ -61,17 +66,17 @@ class EmployeeEndpointTest {
 
 
         @Test
-        void updateBruceToMavelShouldGetMavel() throws JsonProcessingException {
+        void updateBruceToDCShouldGetDC() throws JsonProcessingException {
                 Employee employee = new Employee();
-                employee.setId(2);
+                employee.setId(3);
                 employee.setFirstName("Bruce");
-                employee.setLastName("Wayne");
+                employee.setLastName("Banner");
                 employee.setGender("M");
-                employee.setDepartment(new Department(1, "Mavel"));
+                employee.setDepartment(new Department(2, "DC"));
                 ObjectMapper objectMapper = new ObjectMapper();
                 given().when().body(objectMapper.writeValueAsString(employee))
-                                .contentType("application/json").put("/employee/2").then()
-                                .statusCode(200).body(containsString("Mavel"));
+                                .contentType("application/json").put("/employee/3").then()
+                                .statusCode(200).body(containsString("DC"));
 
 
         }
