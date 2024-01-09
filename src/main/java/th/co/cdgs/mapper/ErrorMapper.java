@@ -18,10 +18,12 @@ import io.quarkus.logging.Log;
 
 @Provider
 public class ErrorMapper implements ExceptionMapper<Exception> {
-    
-    private static final List<Class<?>> expectClazz = Arrays.asList(SQLIntegrityConstraintViolationException.class,OptimisticLockException.class, PersistenceException.class);
-	
-    private Throwable getExpectCause(Throwable throwable, List<Class<?>> classList) {
+
+	private static final List<Class<?>> expectClazz =
+			Arrays.asList(SQLIntegrityConstraintViolationException.class,
+					OptimisticLockException.class, PersistenceException.class);
+
+	private Throwable getExpectCause(Throwable throwable, List<Class<?>> classList) {
 		Class<?> clazz = throwable.getClass();
 		if (classList.contains(clazz)) {
 			return throwable;
@@ -33,24 +35,23 @@ public class ErrorMapper implements ExceptionMapper<Exception> {
 		}
 	}
 
-    @Override
-    public Response toResponse(Exception exception) {
-    	
-    	Map<String,String> messages = new HashMap<>();
-    	Throwable childCase = getExpectCause(exception, expectClazz);
-    	if (childCase instanceof SQLException) {
-    		Log.error("getErrorCode = " +((SQLException) childCase).getErrorCode());
-    		messages.put("message", "SQLException code="+((SQLException) childCase).getErrorCode());
-    	}else if (childCase instanceof jakarta.persistence.OptimisticLockException) {
-    		messages.put("message", "ไม่สามารถแก้ไขข้อมูลได้ เนื่องจาก ข้อมูลถูกแก้ไขด้วยผู้อื่น");
-		} else if (childCase instanceof jakarta.persistence.PersistenceException
-				&& childCase.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+	@Override
+	public Response toResponse(Exception exception) {
+		Map<String, String> messages = new HashMap<>();
+		Throwable childCase = getExpectCause(exception, expectClazz);
+		if (childCase instanceof SQLException) {
+			Log.error("getErrorCode = " + ((SQLException) childCase).getErrorCode());
+			messages.put("message",
+					"SQLException code=" + ((SQLException) childCase).getErrorCode());
+		} else if (childCase instanceof jakarta.persistence.OptimisticLockException) {
+			messages.put("message", "ไม่สามารถแก้ไขข้อมูลได้ เนื่องจาก ข้อมูลถูกแก้ไขด้วยผู้อื่น");
+		} else if (childCase instanceof jakarta.persistence.PersistenceException && childCase
+				.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
 			messages.put("message", "Referential integrity constraint violation");
 		} else {
 			messages.put("message", exception.getMessage());
 		}
-
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(messages).build();
-    }
+		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(messages).build();
+	}
 
 }
