@@ -52,4 +52,6 @@ public class EmployeeService {
         return entityManager.merge(entity);
 	}
 
+    public void changeDepartment(Employee entity, Employee employee) {}
+
 }

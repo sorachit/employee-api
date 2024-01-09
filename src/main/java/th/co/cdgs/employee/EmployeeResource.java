@@ -10,6 +10,7 @@ import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -121,15 +122,20 @@ public class EmployeeResource {
         return Response.status(Status.CREATED).entity(employee).build();
     }
 
+    @Transactional
     @PUT
     @Path("{id}")
     public Response update(Integer id, Employee employee) {
+        Employee entity = entityManager.merge(employee);
+        return Response.ok(entity).build();
+    }
+
+
+    @PATCH
+    @Path("{id}")
+    public Response changeDepartment(Integer id, Employee employee) {
         Employee entity = entityManager.find(Employee.class, id);
-        if (entity == null) {
-            throw new WebApplicationException("Employee with id of " + id + " does not exist.",
-                    Status.NOT_FOUND);
-        }
-        entity = employeeService.update(entity, employee);
+        employeeService.changeDepartment(entity,employee);
         return Response.ok(entity).build();
     }
 
