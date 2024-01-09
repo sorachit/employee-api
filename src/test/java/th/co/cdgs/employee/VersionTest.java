@@ -4,8 +4,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
@@ -17,31 +15,61 @@ class VersionTest {
 
 
         @Test
-        void updateTonyToDCShouldGetDC() throws JsonProcessingException {
+        void updateBruceWayneToJackNapierShouldGetJackNapier() throws JsonProcessingException {
                 ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-                Response response = given().when().get("/employee/1").then().extract().response();
-                Employee tony = objectMapper.readValue(response.getBody().asString(),
+                Response response = given().when().get("/employee/2").then().extract().response();
+                Employee bruch = objectMapper.readValue(response.getBody().asString(),
                                 Employee.class);
-                assertEquals("Mavel", tony.getDepartment().getName());
-                tony.setDepartment(new Department(2, "DC"));
-                given().when().body(objectMapper.writeValueAsString(tony))
-                                .contentType("application/json").put("/employee/1").then()
-                                .statusCode(200).body(containsString("DC"));
-                given().when().get("/employee/1").then().statusCode(200).body(containsString("DC"));
+                assertEquals("Bruce", bruch.getFirstName());
+                assertEquals("Wayne", bruch.getLastName());
+                bruch.setFirstName("Jack");
+                bruch.setLastName("Napier");
+                given().when().body(objectMapper.writeValueAsString(bruch))
+                                .contentType("application/json").put("/employee/2").then()
+                                .statusCode(200).body(containsString("Jack"));
+                given().when().get("/employee/2").then().statusCode(200).body(containsString("Jack"));
         }
 
         @Test
-        void updateBruceToMavelShouldOptimisticLockException() throws JsonProcessingException {
+        void updateBruceWayneToJackNapierShouldOptimisticLockException() throws JsonProcessingException {
                 ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
                 Response bruceResponse =
                                 given().when().get("/employee/2").then().extract().response();
                 Employee bruce = objectMapper.readValue(bruceResponse.getBody().asString(),
                                 Employee.class);
+                bruce.setFirstName("Jack");
+                bruce.setLastName("Napier");
                 bruce.setVersion(0);
                 Response response = given().when().body(objectMapper.writeValueAsString(bruce))
                                 .contentType("application/json").put("/employee/2").then().extract()
+                                .response();
+                assertEquals(500, response.statusCode());
+                assertEquals("jakarta.persistence.OptimisticLockException",
+                                response.body().jsonPath().getString("exceptionType"));
+        }
+
+        @Test
+        void changeDepartmentClarkToMavelShouldBeGetMavel() throws JsonProcessingException {
+                ObjectMapper objectMapper = new ObjectMapper();
+                Employee clark = new Employee();
+                clark.setVersion(0);
+                clark.setDepartment(new Department(1, "Mavel"));
+                given().when().body(objectMapper.writeValueAsString(clark))
+                                .contentType("application/json").patch("/employee/6").then()
+                                .statusCode(200).body(containsString("Mavel"));
+                given().when().get("/employee/6").then().statusCode(200)
+                                .body(containsString("Mavel"));
+        }
+        
+
+        @Test
+        void changeDepartmentBruceToMavelShouldOptimisticLockException() throws JsonProcessingException {
+                ObjectMapper objectMapper = new ObjectMapper();
+                Employee bruce = new Employee();
+                bruce.setVersion(0);
+                bruce.setDepartment(new Department(1, "Mavel"));
+                Response response = given().when().body(objectMapper.writeValueAsString(bruce))
+                                .contentType("application/json").patch("/employee/2").then().extract()
                                 .response();
                 assertEquals(500, response.statusCode());
                 assertEquals("jakarta.persistence.OptimisticLockException",

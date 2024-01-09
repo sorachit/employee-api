@@ -42,5 +42,11 @@ public class EmployeeService {
 		entityManager.remove(entity);
 	}
 
+	@Transactional
+	public Employee changeDepartment(Employee entity , Employee employee) {
+		entity.setDepartment(employee.getDepartment());
+        entity.setVersion(employee.getVersion());
+		return entityManager.merge(entity);
+	}
 
 }
