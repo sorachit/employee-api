@@ -31,7 +31,7 @@ public class Employee {
     private String gender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department")
+    @JoinColumn(name = "department" , referencedColumnName= "code")
     private Department department;
 
     public Integer getId() {
