@@ -1,6 +1,8 @@
 package th.co.cdgs.employee;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -31,12 +33,15 @@ public class EmployeeResource {
     public List<Employee> get() {
         return entityManager.createQuery("from Employee", Employee.class).getResultList();
     }
-    
-    
+
+
     @GET
     @Path("searchByNativeSql")
-    public List<Employee> nativeQuery(@BeanParam EmployeeBeanParam condition) {
-        StringBuilder sql = new StringBuilder("select id, first_name,last_name,gender,department from employee where 1=1 ");
+    public List<EmployeeBean> nativeQuery(@BeanParam EmployeeBeanParam condition) {
+        StringBuilder sql = new StringBuilder(
+                "select id, first_name,last_name,concat(first_name,' ',last_name) full_name,gender,department ");
+        sql.append(" from employee ");
+        sql.append(" where 1=1 ");
         if (condition.getFirstName() != null) {
             sql.append("and first_name like :firstName ");
         }
@@ -49,7 +54,7 @@ public class EmployeeResource {
         if (condition.getDepartment() != null) {
             sql.append("and department = :department ");
         }
-        Query query = entityManager.createNativeQuery(sql.toString(), Employee.class);
+        Query query = entityManager.createNativeQuery(sql.toString());
         if (condition.getFirstName() != null) {
             query.setParameter("firstName", condition.getFirstName());
         }
@@ -62,7 +67,19 @@ public class EmployeeResource {
         if (condition.getDepartment() != null) {
             query.setParameter("department", condition.getDepartment());
         }
-        return query.getResultList();
+        List<EmployeeBean> list = new ArrayList<>();
+        List<Object[]> objects = query.getResultList();
+        for (Object[] object : objects) {
+            EmployeeBean emp = new EmployeeBean();
+            emp.setId((Integer) object[0]);
+            emp.setFirstName((String) object[1]);
+            emp.setLastName((String) object[2]);
+            emp.setFullName((String) object[3]);
+            emp.setGender(String.valueOf(object[4]));
+            emp.setDepartment((String) object[5]);
+            list.add(emp);
+        }
+        return list;
     }
 
     @GET
