@@ -1,45 +1,37 @@
 package th.co.cdgs.employee;
 
 import java.util.List;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
-
-import io.quarkus.logging.Log;
+import th.co.cdgs.department.Department;
 
 @ApplicationScoped
 public class EmployeeService {
 	@Inject
-	EmployeeService employeeService;
-	@Inject
 	EntityManager entityManager;
 
-	@Transactional
-	public boolean deleteByDepartment(Integer department) {
-		boolean hasError = false;
+	@Transactional(TxType.NOT_SUPPORTED)
+	public List<Employee> findEmployeeByDepartment(Integer department) {
 		String jpql = "from Employee e where e.department.code = :department ";
 		Query query = entityManager.createQuery(jpql, Employee.class);
 		query.setParameter("department", department);
-		List<Employee> emps = query.getResultList();
-		for (Employee emp : emps) {
-			try {
-				employeeService.deleteById(emp.getId());
-			} catch (Exception e) {
-				Log.error(e);
-				hasError = true;
-			}
-		}
-		return hasError;
+		return query.getResultList();
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW)
-	public void deleteById(Integer id) {
-		Employee entity = entityManager.find(Employee.class, id);
+	@Transactional(TxType.REQUIRES_NEW)
+	public void deleteEmployee(Integer id) {
+		Employee entity = entityManager.getReference(Employee.class, id);
 		entityManager.remove(entity);
+	}
+
+	@Transactional
+	public void deleteDepartment(Integer id) {
+		Department entity = entityManager.getReference(Department.class, id);
+    	entityManager.remove(entity);
 	}
 
 }

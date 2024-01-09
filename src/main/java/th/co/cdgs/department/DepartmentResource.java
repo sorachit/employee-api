@@ -1,6 +1,7 @@
 package th.co.cdgs.department;
 
 import java.util.List;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -22,8 +23,8 @@ import th.co.cdgs.employee.EmployeeService;
 @Produces("application/json")
 @Consumes("application/json")
 public class DepartmentResource {
-	@Inject
-	EmployeeService employeeService;
+    @Inject
+    EmployeeService employeeService;
 
     @Inject
     EntityManager entityManager;
@@ -32,18 +33,18 @@ public class DepartmentResource {
     public List<Department> get() {
         return entityManager.createQuery("from Department", Department.class).getResultList();
     }
-    
+
     @GET
     @Path("emp")
     public List<DepartmentEmp> getDepartmentEmp() {
         return entityManager.createQuery("from DepartmentEmp", DepartmentEmp.class).getResultList();
     }
-    
-    
+
+
     @GET
     @Path("{id}")
     public Department getSingle(Integer id) {
-    	Department entity = entityManager.find(Department.class, id);
+        Department entity = entityManager.find(Department.class, id);
 
         if (entity == null) {
             throw new WebApplicationException("employee with id of " + id + " does not exist.",
@@ -51,15 +52,24 @@ public class DepartmentResource {
         }
         return entity;
     }
-    
+
     @DELETE
     @Path("{id}")
     @Transactional
-    public Response delete(Integer id) {
-    	Department entity = entityManager.getReference(Department.class, id);
-    	if(!employeeService.deleteByDepartment(entity.getCode())) {
-    		entityManager.remove(entity);
-    	}
+    public Response deleteByDepartment(Integer id) {
+        List<Employee> emps = employeeService.findEmployeeByDepartment(id);
+        boolean hasError = false;
+        for (Employee emp : emps) {
+            try {
+                employeeService.deleteEmployee(emp.getId());
+            } catch (Exception e) {
+                hasError = true;
+            }
+        }
+        if (!hasError) {
+            Department entity = entityManager.getReference(Department.class, id);
+            entityManager.remove(entity);
+        }
         return Response.ok().build();
     }
 
