@@ -41,14 +41,18 @@ public class EmployeeService {
 		Employee entity = entityManager.find(Employee.class, id);
 		entityManager.remove(entity);
 	}
+
+	@Transactional(value = TxType.REQUIRES_NEW)
+	public Employee findEmployee(Integer id) {
+		return entityManager.find(Employee.class, id);
+	}
 	
-	@Transactional
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public Employee update(Employee entity , Employee employee) {
 		entity.setDepartment(employee.getDepartment());
         entity.setFirstName(employee.getFirstName());
         entity.setLastName(employee.getLastName());
         entity.setGender(employee.getGender());
-        entity.setVersion(employee.getVersion());
         return entityManager.merge(entity);
 	}
 

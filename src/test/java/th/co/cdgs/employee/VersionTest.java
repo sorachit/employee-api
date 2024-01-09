@@ -21,26 +21,26 @@ class VersionTest {
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
                 Response response = given().when().get("/employee/1").then().extract().response();
-                Employee tony = objectMapper.convertValue(response.getBody().asString(),
+                Employee tony = objectMapper.readValue(response.getBody().asString(),
                                 Employee.class);
                 assertEquals("Mavel", tony.getDepartment().getName());
                 tony.setDepartment(new Department(2, "DC"));
                 given().when().body(objectMapper.writeValueAsString(tony))
                                 .contentType("application/json").put("/employee/1").then()
                                 .statusCode(200).body(containsString("DC"));
+                given().when().get("/employee/1").then().statusCode(200).body(containsString("DC"));
         }
 
         @Test
         void updateBruceToMavelShouldOptimisticLockException() throws JsonProcessingException {
-                Employee employee = new Employee();
-                employee.setId(2);
-                employee.setFirstName("Bruce");
-                employee.setLastName("Wayne");
-                employee.setGender("M");
-                employee.setVersion(0);
-                employee.setDepartment(new Department(1, "Mavel"));
                 ObjectMapper objectMapper = new ObjectMapper();
-                Response response = given().when().body(objectMapper.writeValueAsString(employee))
+                objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+                Response bruceResponse =
+                                given().when().get("/employee/2").then().extract().response();
+                Employee bruce = objectMapper.readValue(bruceResponse.getBody().asString(),
+                                Employee.class);
+                bruce.setVersion(0);
+                Response response = given().when().body(objectMapper.writeValueAsString(bruce))
                                 .contentType("application/json").put("/employee/2").then().extract()
                                 .response();
                 assertEquals(500, response.statusCode());

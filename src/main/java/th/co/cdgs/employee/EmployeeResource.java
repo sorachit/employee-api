@@ -121,15 +121,17 @@ public class EmployeeResource {
         return Response.status(Status.CREATED).entity(employee).build();
     }
 
+    @Transactional
     @PUT
     @Path("{id}")
     public Response update(Integer id, Employee employee) {
-        Employee entity = entityManager.find(Employee.class, id);
-        if (entity == null) {
-            throw new WebApplicationException("Employee with id of " + id + " does not exist.",
-                    Status.NOT_FOUND);
-        }
-        entity = employeeService.update(entity, employee);
+        // Employee entity = employeeService.findEmployee(id);
+        // if (entity == null) {
+        //     throw new WebApplicationException("Employee with id of " + id + " does not exist.",
+        //             Status.NOT_FOUND);
+        // }
+        
+       Employee entity = entityManager.merge(employee);
         return Response.ok(entity).build();
     }
 
