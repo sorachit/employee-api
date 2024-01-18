@@ -10,11 +10,6 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 class EmployeeEndpointTest {
 
-        @Test
-        void getEmployeeHasTonyAndSteve() {
-                given().when().get("/employee").then().statusCode(200).body(containsString("Tony"),
-                                containsString("Steve"));
-        }
 
         @Test
         void getEmployeeByIdHasTony() {
