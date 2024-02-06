@@ -38,14 +38,13 @@ public class EmployeeResource {
 
     @GET
     @Path("{id}")
-    public Employee getSingle(Integer id) {
+    public Response getSingle(Integer id) {
         Employee entity = entityManager.find(Employee.class, id);
 
         if (entity == null) {
-            throw new WebApplicationException("employee with id of " + id + " does not exist.",
-                    Status.NOT_FOUND);
+            return Response.status(Status.NOT_FOUND).build();
         }
-        return entity;
+        return Response.ok( entity).build();
     }
     
     @GET
@@ -124,10 +123,8 @@ public class EmployeeResource {
 
     @Transactional
     @PUT
-    @Path("{id}")
-    public Response update(Integer id, Employee employee) {
-        Employee entity = entityManager.merge(employee);
-        return Response.ok(entity).build();
+    public Response update(Employee employee) {
+        return Response.ok( entityManager.merge(employee)).build();
     }
 
 
