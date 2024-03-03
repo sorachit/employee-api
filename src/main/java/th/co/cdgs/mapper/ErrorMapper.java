@@ -40,9 +40,15 @@ public class ErrorMapper implements ExceptionMapper<Exception> {
 		Map<String, String> messages = new HashMap<>();
 		Throwable childCase = getExpectCause(exception, expectClazz);
 		if (childCase instanceof SQLException) {
-			Log.error("getErrorCode = " + ((SQLException) childCase).getErrorCode());
-			messages.put("message",
-					"SQLException code=" + ((SQLException) childCase).getErrorCode());
+			String sqlState = ((SQLException) childCase).getSQLState();
+			if("23503".equals(sqlState)){
+				messages.put("message",
+						"ไม่สามารถลบข้อมูลได้เนื้องจาก มีการนำไปใช้งานแล้ว");
+			} else {
+				Log.error("getErrorCode = " + ((SQLException) childCase).getErrorCode());
+				messages.put("message",
+						"SQLException code=" + ((SQLException) childCase).getErrorCode());
+			}
 		} else if (childCase instanceof jakarta.persistence.OptimisticLockException) {
 			messages.put("message", "ไม่สามารถแก้ไขข้อมูลได้ เนื่องจาก ข้อมูลถูกแก้ไขด้วยผู้อื่น");
 		} else if (childCase instanceof jakarta.persistence.PersistenceException && childCase
