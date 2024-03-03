@@ -97,10 +97,10 @@ public class EmployeeResource {
         }
         Query query = entityManager.createQuery(jpql.toString(), Employee.class);
         if (condition.getFirstName() != null) {
-            query.setParameter("firstName", condition.getFirstName());
+            query.setParameter("firstName", "%" + condition.getFirstName() + "%");
         }
         if (condition.getLastName() != null) {
-            query.setParameter("lastName", condition.getLastName());
+            query.setParameter("lastName", "%" + condition.getLastName() + "%");
         }
         if (condition.getGender() != null) {
             query.setParameter("gender", condition.getGender());
