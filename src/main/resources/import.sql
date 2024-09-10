@@ -1,7 +1,7 @@
 INSERT INTO department(code, name) VALUES (1, 'Mavel');
 INSERT INTO department(code, name) VALUES (2, 'DC');
 
-INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (1, 'Tony','Stark','M',2);
+INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (1, 'Tony','Stark','M',1);
 INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (2, 'Bruce' , 'Wayne' , 'M' , 2);
 INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (3, 'Bruce' , 'Banner' , 'M' , 1);
 INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (4, 'Barry' , 'Allen' , 'M' , 2);
