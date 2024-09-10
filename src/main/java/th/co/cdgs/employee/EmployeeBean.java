@@ -2,22 +2,26 @@ package th.co.cdgs.employee;
 
 import th.co.cdgs.department.Department;
 
+import java.util.Date;
 
 public class EmployeeBean {
-
     private Integer id;
-
-    
     private String firstName;
-
-    
     private String lastName;
-
-   
     private String gender;
 
    
     private Department department;
+    private String fullName;
+    private Date registerDate;
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
     public Integer getId() {
         return id;
@@ -58,6 +62,16 @@ public class EmployeeBean {
     public void setDepartment(Department department) {
         this.department = department;
     }
+
+    public Date getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(Date registerDate) {
+        this.registerDate = registerDate;
+    }
+
+
 
 
 }

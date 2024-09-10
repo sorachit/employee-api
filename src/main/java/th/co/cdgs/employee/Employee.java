@@ -1,5 +1,6 @@
 package th.co.cdgs.employee;
 
+import java.util.Date;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import th.co.cdgs.department.Department;
 
 @Entity
@@ -21,18 +23,31 @@ public class Employee {
     @GeneratedValue(generator = "employeeSequence")
     private Integer id;
 
-    @Column(name = "first_name", length = 100)
+    @Column(name = "first_name", length = 100 )
     private String firstName;
 
-    @Column(name = "last_name", length = 100)
+    @Column(name = "last_name", length = 100, unique = true)
     private String lastName;
 
     @Column(length = 1)
     private String gender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department" , referencedColumnName= "code")
+    @JoinColumn(name = "department" ,referencedColumnName = "code")
     private Department department;
+
+    @Column(name = "register_date")
+    private Date registerDate;
+
+    @Transient
+    private Date startRegisterDate;
+
+    @Transient
+    private Date endRegisterDate;
+
+    // @Transient
+    // private String fullName;
+
 
     public Integer getId() {
         return id;
@@ -66,13 +81,42 @@ public class Employee {
         this.gender = gender;
     }
 
+    public Date getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(Date registerDate) {
+        this.registerDate = registerDate;
+    }
+
     public Department getDepartment() {
-        return department;
+        return this.department;
     }
 
     public void setDepartment(Department department) {
         this.department = department;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    public Date getStartRegisterDate() {
+        return startRegisterDate;
+    }
+
+    public void setStartRegisterDate(Date startRegisterDate) {
+        this.startRegisterDate = startRegisterDate;
+    }
+
+    public Date getEndRegisterDate() {
+        return endRegisterDate;
+    }
+
+    public void setEndRegisterDate(Date endRegisterDate) {
+        this.endRegisterDate = endRegisterDate;
+    }
+
+    
 
 }

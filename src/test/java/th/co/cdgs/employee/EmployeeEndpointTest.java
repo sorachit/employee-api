@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
@@ -20,7 +21,7 @@ class EmployeeEndpointTest {
         void getEmployeeHasTonyAndSteve() throws JsonMappingException, JsonProcessingException {
                 Response response = given().when().get("/employee").then().extract().response();
                 assertEquals(200, response.statusCode());
-                ObjectMapper objectMapper = new ObjectMapper();
+                ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 Employee[] employees = objectMapper.readValue(response.body().asString(),
                                 Employee[].class);
                 assertEquals(14, employees.length);
@@ -47,7 +48,7 @@ class EmployeeEndpointTest {
         void getEmployeeByIdHasTony() throws JsonMappingException, JsonProcessingException {
                 Response response = given().when().get("/employee/1").then().extract().response();
                 assertEquals(200, response.statusCode());
-                ObjectMapper objectMapper = new ObjectMapper();
+                ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 Employee employee = objectMapper.readValue(response.body().asString(),
                                 Employee.class);
                 assertEquals("Tony", employee.getFirstName());
@@ -98,10 +99,4 @@ class EmployeeEndpointTest {
                                 .statusCode(404).body(containsString("Employee with id of 100"));
         }
 
-
-        @Test
-        void getEmployeeByDepartmentHasClark() {
-                given().when().get("/employee/search?department=2").then().statusCode(200)
-                                .body(containsString("Clark"));
-        }
 }

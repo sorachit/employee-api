@@ -15,6 +15,14 @@ public class ErrorMapper implements ExceptionMapper<Exception> {
     @Inject
     ObjectMapper objectMapper;
 
+
+    public static Throwable getRootCause(Throwable throwable) {
+        Throwable cause = throwable;
+        while (cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+        return cause;
+    }
     @Override
     public Response toResponse(Exception exception) {
         LOGGER.error("Failed to handle request", exception);
@@ -23,15 +31,13 @@ public class ErrorMapper implements ExceptionMapper<Exception> {
         if (exception instanceof WebApplicationException) {
             code = ((WebApplicationException) exception).getResponse().getStatus();
         }
-
         ObjectNode exceptionJson = objectMapper.createObjectNode();
-        exceptionJson.put("exceptionType", exception.getClass().getName());
+        Throwable ex = getRootCause(exception);
+        exceptionJson.put("exceptionType", ex.getClass().getName());
         exceptionJson.put("code", code);
-
-        if (exception.getMessage() != null) {
-            exceptionJson.put("error", exception.getMessage());
+        if (ex.getMessage() != null) {
+            exceptionJson.put("error", ex.getMessage());
         }
-
         return Response.status(code).entity(exceptionJson).build();
     }
 
