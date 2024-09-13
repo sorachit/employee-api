@@ -1,5 +1,9 @@
 package th.co.cdgs.employee;
 
+import java.util.Date;
+import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -7,8 +11,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import th.co.cdgs.department.Department;
 
 @Entity
@@ -21,18 +27,31 @@ public class Employee {
     @GeneratedValue(generator = "employeeSequence")
     private Integer id;
 
-    @Column(name = "first_name", length = 100)
+    @Column(name = "first_name", length = 100 )
     private String firstName;
 
-    @Column(name = "last_name", length = 100)
+    @Column(name = "last_name", length = 100, unique = true)
     private String lastName;
 
     @Column(length = 1)
     private String gender;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "department")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department", referencedColumnName = "code")
     private Department department;
+
+    @Column(name = "register_date")
+    private Date registerDate;
+
+    @Transient
+    private Date startRegisterDate;
+
+    @Transient
+    private Date endRegisterDate;
+
+    @OneToMany(fetch = FetchType.LAZY , mappedBy = "employee" ,cascade = CascadeType.ALL)
+    private Set<EmployeeEmail> email;
+
 
     public Integer getId() {
         return id;
@@ -66,13 +85,50 @@ public class Employee {
         this.gender = gender;
     }
 
+    public Date getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(Date registerDate) {
+        this.registerDate = registerDate;
+    }
+
     public Department getDepartment() {
-        return department;
+        return this.department;
     }
 
     public void setDepartment(Department department) {
         this.department = department;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    public Date getStartRegisterDate() {
+        return startRegisterDate;
+    }
+
+    public void setStartRegisterDate(Date startRegisterDate) {
+        this.startRegisterDate = startRegisterDate;
+    }
+
+    public Date getEndRegisterDate() {
+        return endRegisterDate;
+    }
+
+    public void setEndRegisterDate(Date endRegisterDate) {
+        this.endRegisterDate = endRegisterDate;
+    }
+
+    public Set<EmployeeEmail> getEmail() {
+        return email;
+    }
+
+    public void setEmail(Set<EmployeeEmail> email) {
+        this.email = email;
+    }
+
+    
 
 }

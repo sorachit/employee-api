@@ -1,16 +1,11 @@
 package th.co.cdgs.department;
 
 import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
 import th.co.cdgs.employee.Employee;
 
 @Entity
@@ -25,7 +20,7 @@ public class DepartmentEmp {
     private String name;
     
     @OneToMany(mappedBy="department")
-    List<Employee> employees;
+    private List<Employee> employees;
     
    
     public Integer getCode() {

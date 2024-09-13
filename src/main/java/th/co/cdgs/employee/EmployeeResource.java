@@ -1,6 +1,7 @@
 package th.co.cdgs.employee;
 
 import java.util.List;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -42,6 +43,13 @@ public class EmployeeResource {
                     Status.NOT_FOUND);
         }
         return entity;
+    }
+
+
+    @GET
+    @Path("email/{id}")
+    public List<EmployeeEmail> getEmail(Integer id) {
+        return entityManager.createQuery(" from EmployeeEmail where employee.id = :id" , EmployeeEmail.class).setParameter("id", id).getResultList();
     }
     
     @GET
@@ -114,7 +122,17 @@ public class EmployeeResource {
         if (employee.getId() != null) {
             employee.setId(null);
         }
+
+        employee.getEmail().forEach(email -> {
+            email.setEmployee(employee);
+        });
+
         entityManager.persist(employee);
+        // employee.getEmail().forEach(email -> {
+        //     email.setEmployee(employee);
+        //     entityManager.persist(email);
+        // });
+        
         return Response.status(Status.CREATED).entity(employee).build();
     }
 
