@@ -118,21 +118,23 @@ public class EmployeeResource {
 
     @POST
     @Transactional
-    public Response create(Employee employee) {
-        if (employee.getId() != null) {
-            employee.setId(null);
+    public Response create(EmployeeRequest request) {
+        if (request.getId() != null) {
+            request.setId(null);
         }
-
-        employee.getEmail().forEach(email -> {
-            email.setEmployee(employee);
-        });
-
+        Employee employee = new Employee();
+        employee.setDepartment(request.getDepartment());
+        employee.setGender(request.getGender());
+        employee.setFirstName(request.getFirstName());
+        employee.setLastName(request.getLastName());
+        employee.setRegisterDate(request.getRegisterDate());
         entityManager.persist(employee);
-        // employee.getEmail().forEach(email -> {
-        //     email.setEmployee(employee);
-        //     entityManager.persist(email);
-        // });
-        
+        for (EmployeeEmail email : request.getEmail()) {
+            EmployeeEmail employeeEmail = new EmployeeEmail();
+            employeeEmail.setEmployeeId(employee.getId());
+            employeeEmail.setEmail(email.getEmail());
+            entityManager.persist(employeeEmail);
+        }
         return Response.status(Status.CREATED).entity(employee).build();
     }
 

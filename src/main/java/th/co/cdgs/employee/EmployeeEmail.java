@@ -22,14 +22,12 @@ public class EmployeeEmail {
     @GeneratedValue(generator = "employeeEmailSequence")
     private Integer id;
 
+    @Column(name = "employee_id")
+    private Integer employeeId;
     
     @Column(name = "email", length = 255)
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id", referencedColumnName = "id")
-    @JsonBackReference
-    private Employee employee;
 
     public String getEmail() {
         return email;
@@ -39,12 +37,22 @@ public class EmployeeEmail {
         this.email = email;
     }
 
-    public Employee getEmployee() {
-        return employee;
+    public Integer getId() {
+        return id;
     }
 
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public void setId(Integer id) {
+        this.id = id;
     }
+
+    public Integer getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(Integer employeeId) {
+        this.employeeId = employeeId;
+    }
+
+   
 
 }

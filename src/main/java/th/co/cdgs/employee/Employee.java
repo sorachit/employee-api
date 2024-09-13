@@ -49,10 +49,6 @@ public class Employee {
     @Transient
     private Date endRegisterDate;
 
-    @OneToMany(fetch = FetchType.LAZY , mappedBy = "employee" ,cascade = CascadeType.ALL)
-    private Set<EmployeeEmail> email;
-
-
     public Integer getId() {
         return id;
     }
@@ -119,16 +115,6 @@ public class Employee {
 
     public void setEndRegisterDate(Date endRegisterDate) {
         this.endRegisterDate = endRegisterDate;
-    }
-
-    public Set<EmployeeEmail> getEmail() {
-        return email;
-    }
-
-    public void setEmail(Set<EmployeeEmail> email) {
-        this.email = email;
-    }
-
-    
+    }  
 
 }
