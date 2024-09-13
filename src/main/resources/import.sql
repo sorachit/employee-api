@@ -16,3 +16,7 @@ INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (12, 'Pe
 INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (13, 'Arthur' , 'Curry' , 'M' , 2);
 INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (14, 'Victor' , 'Stone' , 'M' , 2);
 
+
+INSERT INTO employee_email(id,employee_id, email) VALUES (1 ,1, 'tony.s@mavel.com');
+INSERT INTO employee_email(id,employee_id, email) VALUES (2 ,1, 'tony.s@gmail.com');
+
