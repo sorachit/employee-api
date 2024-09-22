@@ -24,7 +24,7 @@ public class Employee {
     @Column(name = "first_name", length = 100)
     private String firstName;
 
-    @Column(name = "last_name", length = 100)
+    @Column(name = "last_name", length = 100 , unique = true)
     private String lastName;
 
     @Column(length = 1)
@@ -74,5 +74,20 @@ public class Employee {
         this.department = department;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 
+    
+    
+    @Override
+    public String toString() {
+        return "{" +
+                "\"id\"=\"" + id + "\"," +
+                ", \"firstName\"=\"" + firstName + "\"," +
+                ", \"lastName\"=\"" + lastName + "\"," +
+                ", \"gender\"=\"" + gender + "\"," +
+                ", \"department\"=\"" + department +
+                '}';
+    }
 }

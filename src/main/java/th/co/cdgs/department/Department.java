@@ -11,9 +11,17 @@ public class Department extends BaseDepartment{
 		
 	}
 
-	public Department(Integer code,String name){
-    	super.setCode(code);
-    	super.setName(name);
+    public Department(Integer code, String name) {
+        super.setCode(code);
+        super.setName(name);
     }
 
+    
+    @Override
+    public String toString() {
+        return "{" +
+                "\"code\"=\"" + super.getCode() + "\"," +
+                "\"name\"=\"" + super.getName() +
+                '}';
+    }
 }
