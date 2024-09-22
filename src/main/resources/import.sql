@@ -18,5 +18,6 @@ INSERT INTO employee(id, first_name,last_name,gender,department) VALUES (14, 'Vi
 
 INSERT INTO ability(id , power , employee) VALUES (1 , 'Rich' , 1);
 
+INSERT INTO employee_email(id,employee_id, email) VALUES (1 ,1, 'tony.s@mavel.com');
+INSERT INTO employee_email(id,employee_id, email) VALUES (2 ,1, 'tony.s@gmail.com');
 
-    

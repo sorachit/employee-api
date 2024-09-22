@@ -1,6 +1,7 @@
 package th.co.cdgs.employee;
 
 import java.util.List;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -48,11 +49,19 @@ public class EmployeeResource {
         }
         return entity;
     }
-    
+
+    @GET
+    @Path("email/{id}")
+    public List<EmployeeEmail> getEmail(Integer id) {
+        return entityManager.createQuery(" from EmployeeEmail where employee.id = :id", EmployeeEmail.class)
+                .setParameter("id", id).getResultList();
+    }
+
     @GET
     @Path("nativeQuery")
     public List<Employee> nativeQuery(@BeanParam EmployeeBeanParam condition) {
-        StringBuilder jpql = new StringBuilder("select id, first_name,last_name,gender,department from employee where 1=1 ");
+        StringBuilder jpql = new StringBuilder(
+                "select id, first_name,last_name,gender,department from employee where 1=1 ");
         if (condition.getFirstName() != null) {
             jpql.append("and first_name like :firstName ");
         }
@@ -120,7 +129,18 @@ public class EmployeeResource {
         if (employee.getId() != null) {
             employee.setId(null);
         }
+
+        if (employee.getEmail() != null) {
+            employee.getEmail().forEach(email -> {
+                email.setEmployee(employee);
+            });
+        }
         entityManager.persist(employee);
+        // employee.getEmail().forEach(email -> {
+        // email.setEmployee(employee);
+        // entityManager.persist(email);
+        // });
+
         return Response.status(Status.CREATED).entity(employee).build();
     }
 
@@ -137,6 +157,12 @@ public class EmployeeResource {
         entity.setFirstName(employee.getFirstName());
         entity.setLastName(employee.getLastName());
         entity.setGender(employee.getGender());
+        if (employee.getEmail() != null) {
+            employee.getEmail().forEach(email -> {
+                email.setEmployee(entity);
+                entityManager.merge(email);
+            });
+        }
         return Response.ok(entity).build();
     }
 
