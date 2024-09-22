@@ -45,17 +45,18 @@ public class EmployeeResource {
         return entity;
     }
 
-
     @GET
     @Path("email/{id}")
     public List<EmployeeEmail> getEmail(Integer id) {
-        return entityManager.createQuery(" from EmployeeEmail where employee.id = :id" , EmployeeEmail.class).setParameter("id", id).getResultList();
+        return entityManager.createQuery(" from EmployeeEmail where employee.id = :id", EmployeeEmail.class)
+                .setParameter("id", id).getResultList();
     }
-    
+
     @GET
     @Path("nativeQuery")
     public List<Employee> nativeQuery(@BeanParam EmployeeBeanParam condition) {
-        StringBuilder jpql = new StringBuilder("select id, first_name,last_name,gender,department from employee where 1=1 ");
+        StringBuilder jpql = new StringBuilder(
+                "select id, first_name,last_name,gender,department from employee where 1=1 ");
         if (condition.getFirstName() != null) {
             jpql.append("and first_name like :firstName ");
         }
@@ -123,16 +124,17 @@ public class EmployeeResource {
             employee.setId(null);
         }
 
-        employee.getEmail().forEach(email -> {
-            email.setEmployee(employee);
-        });
-
+        if (employee.getEmail() != null) {
+            employee.getEmail().forEach(email -> {
+                email.setEmployee(employee);
+            });
+        }
         entityManager.persist(employee);
         // employee.getEmail().forEach(email -> {
-        //     email.setEmployee(employee);
-        //     entityManager.persist(email);
+        // email.setEmployee(employee);
+        // entityManager.persist(email);
         // });
-        
+
         return Response.status(Status.CREATED).entity(employee).build();
     }
 
@@ -149,6 +151,12 @@ public class EmployeeResource {
         entity.setFirstName(employee.getFirstName());
         entity.setLastName(employee.getLastName());
         entity.setGender(employee.getGender());
+        if (employee.getEmail() != null) {
+            employee.getEmail().forEach(email -> {
+                email.setEmployee(entity);
+                entityManager.merge(email);
+            });
+        }
         return Response.ok(entity).build();
     }
 
