@@ -111,5 +111,29 @@ public class Employee {
 		this.version = version;
 	}
 
+    public Date getStartRegisterDate() {
+        return startRegisterDate;
+    }
+
+    public void setStartRegisterDate(Date startRegisterDate) {
+        this.startRegisterDate = startRegisterDate;
+    }
+
+    public Date getEndRegisterDate() {
+        return endRegisterDate;
+    }
+
+    public void setEndRegisterDate(Date endRegisterDate) {
+        this.endRegisterDate = endRegisterDate;
+    }
+
+    public Set<EmployeeEmail> getEmail() {
+        return email;
+    }
+
+    public void setEmail(Set<EmployeeEmail> email) {
+        this.email = email;
+    }
+
 
 }
