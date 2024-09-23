@@ -123,28 +123,43 @@ public class EmployeeResource {
         if (employee.getId() != null) {
             employee.setId(null);
         }
-        employee.getEmail().forEach(email -> {
-            email.setEmployee(employee);
-        });
+        if (employee.getEmail() != null) {
+            employee.getEmail().forEach(email -> {
+                email.setEmployee(employee);
+            });
+        }
         entityManager.persist(employee);
         return Response.status(Status.CREATED).entity(employee).build();
     }
 
-    @Transactional
     @PUT
     @Path("{id}")
+    @Transactional
     public Response update(Integer id, Employee employee) {
-        Employee entity = entityManager.merge(employee);
+        Employee entity = entityManager.find(Employee.class, id);
+        if (entity == null) {
+            throw new WebApplicationException("Employee with id of " + id + " does not exist.",
+                    Status.NOT_FOUND);
+        }
+        entity.setDepartment(employee.getDepartment());
+        entity.setFirstName(employee.getFirstName());
+        entity.setLastName(employee.getLastName());
+        entity.setGender(employee.getGender());
+        if (employee.getEmail() != null) {
+            employee.getEmail().forEach(email -> {
+                email.setEmployee(entity);
+                entityManager.merge(email);
+            });
+        }
         return Response.ok(entity).build();
     }
 
 
     @PATCH
-    @Path("{id}")
-    public Response changeDepartment(Integer id, Employee employee) {
-        Employee entity = entityManager.find(Employee.class, id);
+    @Transactional
+    public Response changeDepartment(Employee employee) {
+        Employee entity = entityManager.find(Employee.class, employee.getId());
         entity.setDepartment(employee.getDepartment());
-        entity.setVersion(employee.getVersion());
         return Response.ok(entity).build();
     }
 
