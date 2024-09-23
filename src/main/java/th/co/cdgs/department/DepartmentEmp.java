@@ -5,7 +5,6 @@ import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 import th.co.cdgs.employee.Employee;
 
 @Entity
