@@ -136,7 +136,8 @@ public class EmployeeResource {
     @Path("{id}")
     @Transactional
     public Response update(Integer id, Employee employee) {
-        Employee entity = entityManager.find(Employee.class, id);
+        Employee entity = entityManager.createQuery(" from Employee e join fetch e.email where e.id = :id", Employee.class)
+        .setParameter("id", id).getSingleResult();
         if (entity == null) {
             throw new WebApplicationException("Employee with id of " + id + " does not exist.",
                     Status.NOT_FOUND);
