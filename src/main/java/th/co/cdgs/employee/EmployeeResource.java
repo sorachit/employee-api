@@ -123,18 +123,12 @@ public class EmployeeResource {
         if (employee.getId() != null) {
             employee.setId(null);
         }
-
         if (employee.getEmail() != null) {
             employee.getEmail().forEach(email -> {
                 email.setEmployee(employee);
             });
         }
         entityManager.persist(employee);
-        // employee.getEmail().forEach(email -> {
-        // email.setEmployee(employee);
-        // entityManager.persist(email);
-        // });
-
         return Response.status(Status.CREATED).entity(employee).build();
     }
 
