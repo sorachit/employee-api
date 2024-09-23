@@ -1,7 +1,6 @@
 package th.co.cdgs.employee;
 
 import java.util.List;
-import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -25,9 +24,6 @@ import jakarta.ws.rs.core.Response.Status;
 @Produces("application/json")
 @Consumes("application/json")
 public class EmployeeResource {
-
-    @Inject
-    EmployeeService employeeService;
 
     @Inject
     EntityManager entityManager;
@@ -147,7 +143,8 @@ public class EmployeeResource {
     @Path("{id}")
     public Response changeDepartment(Integer id, Employee employee) {
         Employee entity = entityManager.find(Employee.class, id);
-        employeeService.changeDepartment(entity,employee);
+        entity.setDepartment(employee.getDepartment());
+        entity.setVersion(employee.getVersion());
         return Response.ok(entity).build();
     }
 
