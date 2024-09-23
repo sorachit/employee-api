@@ -1,6 +1,7 @@
 package th.co.cdgs.employee;
 
 import java.util.List;
+import org.hibernate.Hibernate;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -27,6 +28,9 @@ public class EmployeeResource {
 
     @Inject
     EntityManager entityManager;
+
+    @Inject
+    EmployeeService employeeService;
 
     @GET
     public List<Employee> get() {
@@ -133,33 +137,23 @@ public class EmployeeResource {
     }
 
     @PUT
-    @Path("{id}")
     @Transactional
-    public Response update(Integer id, Employee employee) {
-        Employee entity = entityManager.find(Employee.class, id);
-        if (entity == null) {
-            throw new WebApplicationException("Employee with id of " + id + " does not exist.",
-                    Status.NOT_FOUND);
-        }
-        entity.setDepartment(employee.getDepartment());
-        entity.setFirstName(employee.getFirstName());
-        entity.setLastName(employee.getLastName());
-        entity.setGender(employee.getGender());
-        if (employee.getEmail() != null) {
-            employee.getEmail().forEach(email -> {
-                email.setEmployee(entity);
-                entityManager.merge(email);
-            });
-        }
-        return Response.ok(entity).build();
+    public Response update(Employee employee) {
+        employee = entityManager.merge(employee);
+        Hibernate.initialize(employee.getDepartment()); 
+        Hibernate.initialize(employee.getEmail()); 
+        return Response.ok(employee).build();
     }
 
 
     @PATCH
     @Transactional
     public Response changeDepartment(Employee employee) {
-        Employee entity = entityManager.find(Employee.class, employee.getId());
+        Employee entity = employeeService.find(employee.getId());
         entity.setDepartment(employee.getDepartment());
+        entity.setVersion(employee.getVersion());
+        entity = entityManager.merge(entity);
+        Hibernate.initialize(entity.getDepartment()); 
         return Response.ok(entity).build();
     }
 
