@@ -19,6 +19,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import th.co.cdgs.auditlog.AuditLog;
+import th.co.cdgs.auditlog.AuditLogService;
 
 @Path("employee")
 @ApplicationScoped
@@ -28,6 +30,9 @@ public class EmployeeResource {
 
     @Inject
     EntityManager entityManager;
+
+    @Inject
+    AuditLogService auditLogService;
 
     @Inject
     EmployeeService employeeService;
@@ -124,6 +129,7 @@ public class EmployeeResource {
     @POST
     @Transactional
     public Response create(Employee employee) {
+        auditLogService.logCreation(new AuditLog("Create Employee", employee.toString()));
         if (employee.getId() != null) {
             employee.setId(null);
         }

@@ -135,5 +135,10 @@ public class Employee {
         this.email = email;
     }
 
-
+    @Override
+    public String toString() {
+        return "{" + "\"id\"=\"" + id + "\"," + ", \"firstName\"=\"" + firstName + "\","
+                + ", \"lastName\"=\"" + lastName + "\"," + ", \"gender\"=\"" + gender + "\","
+                + ", \"department\"=\"" + department + '}';
+    }
 }
