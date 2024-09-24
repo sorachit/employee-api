@@ -9,43 +9,12 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "department")
-public class Department {
-
-    @Id
-    @SequenceGenerator(name = "departmentSequence", sequenceName = "department_id_seq",
-            allocationSize = 1, initialValue = 15)
-    @GeneratedValue(generator = "departmentSequence")
-    private Integer code;
-
-    @Column(length = 100)
-    private String name;
-    
-    Department(){
-    	
+public class Department extends BaseDepartment{
+    Department(){	
     }
     
     public Department(Integer code,String name){
-    	this.code = code;
-    	this.name = name;
+    	super.setCode(code);
+    	this.setName(name);
     }
-    
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-
 }
