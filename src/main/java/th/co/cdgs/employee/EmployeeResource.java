@@ -5,6 +5,7 @@ import org.hibernate.Hibernate;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BeanParam;
@@ -36,6 +37,8 @@ public class EmployeeResource {
 
     @Inject
     EmployeeService employeeService;
+
+    
 
     @GET
     public List<Employee> get() {
@@ -125,6 +128,28 @@ public class EmployeeResource {
         }
         return query.getResultList();
     }
+
+
+    @POST
+    @Path("/createEmployeeMaxSeq")
+    @Transactional
+    public Response createEmployeeMaxSeq(Employee employee) {
+        auditLogService.logCreation(new AuditLog("Create Employee", employee.toString()));
+        Integer seqNo = entityManager.createQuery(" select max(seqNo) from Employee", Integer.class)
+                .setLockMode(LockModeType.PESSIMISTIC_READ).getSingleResult();
+        employee.setSeqNo(seqNo + 1);
+        if (employee.getId() != null) {
+            employee.setId(null);
+        }
+        if (employee.getEmail() != null) {
+            employee.getEmail().forEach(email -> {
+                email.setEmployee(employee);
+            });
+        }
+        entityManager.persist(employee);
+        return Response.status(Status.CREATED).entity(employee).build();
+    }
+    
 
     @POST
     @Transactional
