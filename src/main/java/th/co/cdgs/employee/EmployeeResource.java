@@ -134,7 +134,7 @@ public class EmployeeResource {
     @POST
     @Path("/createEmployeeMaxSeq")
     @Transactional
-    public Response createEmployeeMaxSeq(Employee employee) {
+    public Response createEmployeeMaxSeq(Employee employee) throws InterruptedException {
         auditLogService.logCreation(new AuditLog("Create Employee", employee.toString()));
         Integer seqNo = entityManager.createQuery(" select max(seqNo) from Employee", Integer.class)
                 .setLockMode(LockModeType.PESSIMISTIC_READ).getSingleResult();
@@ -171,11 +171,16 @@ public class EmployeeResource {
 
     @PUT
     @Transactional
-    public Response update(Employee employee) {
-        employee = entityManager.merge(employee);
-        Hibernate.initialize(employee.getDepartment()); 
-        Hibernate.initialize(employee.getEmail()); 
-        return Response.ok(employee).build();
+    public Response update(final Employee request) {
+        if (request.getEmail() != null) {
+            request.getEmail().forEach(email -> {
+                email.setEmployee(request);
+            });
+        }
+        Employee entity = entityManager.merge(request);
+        Hibernate.initialize(entity.getDepartment()); 
+        Hibernate.initialize(entity.getEmail()); 
+        return Response.ok(entity).build();
     }
 
 
