@@ -18,10 +18,9 @@ class EmployeeThreadTest {
 
         @Test
         void createEmployeeThread() {
-                int loop = 10;
                 ExecutorService executor = Executors.newFixedThreadPool(10); // สร้าง Thread Pool
                 List<Callable<String>> callables = new ArrayList<>();
-                for (int i = 0; i < loop; i++) {
+                for (int i = 0; i < 10; i++) {
                         callables.add(new CreateEmployeeThread("/employee"));
                 }
                 try {
@@ -40,7 +39,7 @@ class EmployeeThreadTest {
                         employees.sort(Comparator.comparingInt(Employee::getSeqNo));
                         // assert seqNo ต้องเรียงลำดับ
                         IntStream.range(0, employees.size())
-                        .forEach(i -> assertEquals(i+1, employees.get(i).getSeqNo()));
+                        .forEach(i -> assertEquals(i+15, employees.get(i).getSeqNo()));
                 } catch (Exception e) {
                         e.printStackTrace();
                 }

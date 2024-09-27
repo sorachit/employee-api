@@ -22,4 +22,4 @@ INSERT INTO employee_email(id,employee_id, email) VALUES (1 ,1, 'tony.s@mavel.co
 INSERT INTO employee_email(id,employee_id, email) VALUES (2 ,1, 'tony.s@gmail.com');
 
 
-INSERT INTO running_seq(entity_class,current_sequence) VALUES ('th.co.cdgs.employee.Employee',0);
+INSERT INTO running_seq(entity_class,current_sequence) VALUES ('th.co.cdgs.employee.Employee',14);
