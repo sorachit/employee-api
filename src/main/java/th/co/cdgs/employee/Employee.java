@@ -21,7 +21,7 @@ import jakarta.persistence.Version;
 import th.co.cdgs.department.Department;
 @Entity
 @Table(name = "employee")
-@EntityListeners(EmployeeRunning.class)
+@EntityListeners(RunningSrevice.class)
 public class Employee {    
     @Id
     @SequenceGenerator(name = "employeeSequence", sequenceName = "employee_id_seq",

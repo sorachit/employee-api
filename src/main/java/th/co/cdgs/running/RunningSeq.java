@@ -29,8 +29,8 @@ public class RunningSeq {
     public void setEntityClass(String entityClass) {
         this.entityClass = entityClass;
     }
-    public void incrementSequence() {
-        this.currentSequence++;
+    public Integer incrementSequence() {
+       return ++this.currentSequence;
     }
 
 }

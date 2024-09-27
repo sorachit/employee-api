@@ -38,7 +38,8 @@ public class EmployeeResource {
     @Inject
     EmployeeService employeeService;
 
-    
+    @Inject
+    RunningSrevice runningSrevice;
 
     @GET
     public List<Employee> get() {
@@ -163,6 +164,7 @@ public class EmployeeResource {
                 email.setEmployee(employee);
             });
         }
+        employee.setSeqNo(runningSrevice.next(Employee.class.getName()));
         entityManager.persist(employee);
         return Response.status(Status.CREATED).entity(employee).build();
     }

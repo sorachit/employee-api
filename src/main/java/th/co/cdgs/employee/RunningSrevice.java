@@ -1,6 +1,7 @@
 package th.co.cdgs.employee;
 
 import java.util.List;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -9,25 +10,22 @@ import jakarta.persistence.PrePersist;
 import jakarta.transaction.Transactional;
 import th.co.cdgs.running.RunningSeq;
 
-@Dependent
-public class EmployeeRunning {
+@ApplicationScoped
+public class RunningSrevice {
 
     @Inject
     EntityManager entityManager;
 
 
-    @PrePersist
-    public void prePersist(Employee employee) {
+    public Integer next(String entityClassName) {
         RunningSeq entity = entityManager
                 .createQuery(" from RunningSeq where entityClass = :entityClass",
                         RunningSeq.class)
-                    .setParameter("entityClass", Employee.class.getName())
+                    .setParameter("entityClass", entityClassName)
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .setHint("javax.persistence.lock.timeout", 5000) // timeout 5 วินาที
                 .getSingleResult();
-        entity.incrementSequence();
-        entityManager.merge(entity);
-        employee.setSeqNo(entity.getCurrentSequence());
+        return entity.incrementSequence();
     }
 
 
