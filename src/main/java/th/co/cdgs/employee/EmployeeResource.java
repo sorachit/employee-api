@@ -36,9 +36,6 @@ public class EmployeeResource {
     AuditLogService auditLogService;
 
     @Inject
-    EmployeeService employeeService;
-
-    @Inject
     RunningSrevice runningSrevice;
 
     @GET
