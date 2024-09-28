@@ -5,6 +5,7 @@ import org.hibernate.Hibernate;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BeanParam;
@@ -34,9 +35,6 @@ public class EmployeeResource {
     @Inject
     AuditLogService auditLogService;
 
-    @Inject
-    EmployeeService employeeService;
-
     @GET
     public List<Employee> get() {
         return entityManager.createQuery("from Employee", Employee.class).getResultList();
@@ -58,9 +56,11 @@ public class EmployeeResource {
     @GET
     @Path("email/{id}")
     public List<EmployeeEmail> getEmail(Integer id) {
-        return entityManager.createQuery(" from EmployeeEmail where employee.id = :id" , EmployeeEmail.class).setParameter("id", id).getResultList();
+        return entityManager
+                .createQuery(" from EmployeeEmail where employee.id = :id", EmployeeEmail.class)
+                .setParameter("id", id).getResultList();
     }
-    
+
     @GET
     @Path("nativeQuery")
     public List<Employee> nativeQuery(@BeanParam EmployeeBeanParam condition) {
@@ -151,8 +151,8 @@ public class EmployeeResource {
             });
         }
         Employee entity = entityManager.merge(request);
-        Hibernate.initialize(entity.getDepartment()); 
-        Hibernate.initialize(entity.getEmail()); 
+        Hibernate.initialize(entity.getDepartment());
+        Hibernate.initialize(entity.getEmail());
         return Response.ok(entity).build();
     }
 
@@ -160,11 +160,13 @@ public class EmployeeResource {
     @PATCH
     @Transactional
     public Response changeDepartment(Employee employee) {
-        Employee entity = employeeService.find(employee.getId());
+        Employee entity = entityManager.createQuery(
+                " from Employee e join fetch e.department join fetch e.email where e.id = :id",
+                Employee.class).setLockMode(LockModeType.OPTIMISTIC)
+                .setParameter("id", employee.getId()).getSingleResult();
         entity.setDepartment(employee.getDepartment());
-        entity.setVersion(employee.getVersion());
         entity = entityManager.merge(entity);
-        Hibernate.initialize(entity.getDepartment()); 
+        Hibernate.initialize(entity.getDepartment());
         return Response.ok(entity).build();
     }
 
