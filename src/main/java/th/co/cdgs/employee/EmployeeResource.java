@@ -62,9 +62,11 @@ public class EmployeeResource {
     @GET
     @Path("email/{id}")
     public List<EmployeeEmail> getEmail(Integer id) {
-        return entityManager.createQuery(" from EmployeeEmail where employee.id = :id" , EmployeeEmail.class).setParameter("id", id).getResultList();
+        return entityManager
+                .createQuery(" from EmployeeEmail where employee.id = :id", EmployeeEmail.class)
+                .setParameter("id", id).getResultList();
     }
-    
+
     @GET
     @Path("nativeQuery")
     public List<Employee> nativeQuery(@BeanParam EmployeeBeanParam condition) {
@@ -137,7 +139,7 @@ public class EmployeeResource {
     public Response createEmployeeMaxSeq(Employee employee) throws InterruptedException {
         auditLogService.logCreation(new AuditLog("Create Employee", employee.toString()));
         Integer seqNo = entityManager.createQuery(" select max(seqNo) from Employee", Integer.class)
-                .setLockMode(LockModeType.PESSIMISTIC_READ).getSingleResult();
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE).getSingleResult();
         employee.setSeqNo(seqNo + 1);
         if (employee.getId() != null) {
             employee.setId(null);
@@ -147,10 +149,11 @@ public class EmployeeResource {
                 email.setEmployee(employee);
             });
         }
+        Thread.sleep(50000);
         entityManager.persist(employee);
         return Response.status(Status.CREATED).entity(employee).build();
     }
-    
+
 
     @POST
     @Transactional
@@ -178,8 +181,8 @@ public class EmployeeResource {
             });
         }
         Employee entity = entityManager.merge(request);
-        Hibernate.initialize(entity.getDepartment()); 
-        Hibernate.initialize(entity.getEmail()); 
+        Hibernate.initialize(entity.getDepartment());
+        Hibernate.initialize(entity.getEmail());
         return Response.ok(entity).build();
     }
 
@@ -187,11 +190,13 @@ public class EmployeeResource {
     @PATCH
     @Transactional
     public Response changeDepartment(Employee employee) {
-        Employee entity = employeeService.find(employee.getId());
+        Employee entity = entityManager.createQuery(
+                " from Employee e join fetch e.department join fetch e.email where e.id = :id",
+                Employee.class).setLockMode(LockModeType.OPTIMISTIC)
+                .setParameter("id", employee.getId()).getSingleResult();
         entity.setDepartment(employee.getDepartment());
-        entity.setVersion(employee.getVersion());
         entity = entityManager.merge(entity);
-        Hibernate.initialize(entity.getDepartment()); 
+        Hibernate.initialize(entity.getDepartment());
         return Response.ok(entity).build();
     }
 
