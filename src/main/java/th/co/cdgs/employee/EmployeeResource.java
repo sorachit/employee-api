@@ -1,11 +1,15 @@
 package th.co.cdgs.employee;
 
 import java.util.List;
+import java.util.Objects;
 import org.hibernate.Hibernate;
+import org.hibernate.engine.spi.EntityEntry;
+import org.hibernate.engine.spi.SessionImplementor;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BeanParam;
@@ -159,13 +163,32 @@ public class EmployeeResource {
 
     @PATCH
     @Transactional
-    public Response changeDepartment(Employee employee) {
+    public Response changeDepartment(Employee request) {
         Employee entity = entityManager.createQuery(
-                " from Employee e join fetch e.department join fetch e.email where e.id = :id",
-                Employee.class).setLockMode(LockModeType.OPTIMISTIC)
-                .setParameter("id", employee.getId()).getSingleResult();
-        entity.setDepartment(employee.getDepartment());
-        entity = entityManager.merge(entity);
+                "from Employee e join fetch e.department join fetch e.email where e.id = :id",
+                Employee.class).setParameter("id", request.getId()).getSingleResult();
+        // ตรวจสอบ version
+        if (!Objects.equals(entity.getVersion(), request.getVersion())) {
+            throw new OptimisticLockException();
+        }
+        // อัปเดตเฉพาะฟิลด์ department ที่มาจาก request
+        entity.setDepartment(request.getDepartment());
+        // Hibernate.initialize ใช้สำหรับการโหลดค่าแบบ Lazy
+        Hibernate.initialize(entity.getDepartment());
+        return Response.ok(entity).build();
+    }
+
+
+    @Inject
+    EmployeeService employeeService;
+    @PATCH
+    @Path("changeDepartmentTx")
+    @Transactional
+    public Response changeDepartmentTx(Employee request) {
+        Employee entity = employeeService.find(request.getId());
+        // อัปเดตเฉพาะฟิลด์ department ที่มาจาก request
+        entity.setDepartment(request.getDepartment());
+        // Hibernate.initialize ใช้สำหรับการโหลดค่าแบบ Lazy
         Hibernate.initialize(entity.getDepartment());
         return Response.ok(entity).build();
     }
