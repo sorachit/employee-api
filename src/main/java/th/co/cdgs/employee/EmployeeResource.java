@@ -25,6 +25,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import th.co.cdgs.auditlog.AuditLog;
 import th.co.cdgs.auditlog.AuditLogService;
+import th.co.cdgs.running.RunningSrevice;
 
 @Path("employee")
 @ApplicationScoped
