@@ -1,10 +1,9 @@
-package th.co.cdgs.employee;
+package th.co.cdgs.running;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
-import th.co.cdgs.running.RunningSeq;
 
 @ApplicationScoped
 public class RunningSrevice {

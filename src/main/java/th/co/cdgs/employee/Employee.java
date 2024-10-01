@@ -2,7 +2,6 @@ package th.co.cdgs.employee;
 
 import java.util.Date;
 import java.util.Set;
-import jakarta.inject.Inject;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,12 +12,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 import th.co.cdgs.department.Department;
+import th.co.cdgs.running.RunningSrevice;
 @Entity
 @Table(name = "employee")
 @EntityListeners(RunningSrevice.class)
