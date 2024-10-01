@@ -1,0 +1,21 @@
+first_name,last_name,gender,seq_no,department,register_date
+Charles,Xavier,M,1,Administration,1963-09-01
+Jean,Grey,F,2,Psychic,1963-09-01
+Scott,Summers,M,3,Field,1963-09-01
+Logan,Howlett,M,4,Field,1963-09-01
+Ororo,Monroe,F,5,Weather,1975-05-01
+Kurt,Wagner,M,6,Teleportation,1975-08-01
+Raven,Darkholme,F,7,Shape-shifting,1970-07-01
+Remy,Lebeau,M,8,Field,1990-01-01
+Anna,Marie,F,9,Field,1981-01-01
+Bobby,Drake,M,10,Ice,1963-09-01
+Hank,McCoy,M,11,Science,1963-09-01
+Kitty,Pryde,F,12,Phasing,1980-10-01
+Piotr,Rasputin,M,13,Metal,1975-05-01
+Warren,Worthington,M,14,Angel,1963-09-01
+James,Madrox,M,15,Duplication,1987-01-01
+Alex,Summers,M,16,Field,1969-12-01
+Emma,Frost,F,17,Psychic,1980-12-01
+Lucas,Bishop,M,18,Time Travel,1991-01-01
+Jubilation,Lee,F,19,Energy,1989-02-01
+Lorna,Dane,F,20,Magnetism,1968-03-01
