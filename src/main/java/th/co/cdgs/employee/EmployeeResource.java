@@ -3,6 +3,7 @@ package th.co.cdgs.employee;
 import java.util.List;
 import java.util.Objects;
 import org.hibernate.Hibernate;
+import io.quarkus.narayana.jta.runtime.TransactionConfiguration;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -131,11 +132,20 @@ public class EmployeeResource {
         return query.getResultList();
     }
 
+    @POST
+    @Path("/sleep")
+    @Transactional
+    @TransactionConfiguration(timeout = 70000)
+    public Response sleep(Employee employee) throws InterruptedException {
+        Thread.sleep(60000);
+        entityManager.persist(employee);
+        return Response.status(Status.CREATED).entity(employee).build();
+    }
 
     @POST
-    @Path("/createEmployeeMaxSeq")
+    @Path("/createMaxSeq")
     @Transactional
-    public Response createEmployeeMaxSeq(Employee employee) throws InterruptedException {
+    public Response createMaxSeq(Employee employee) {
         auditLogService.logCreation(new AuditLog("Create Employee", employee.toString()));
         Integer seqNo = entityManager.createQuery(" select max(seqNo) from Employee", Integer.class)
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE).getSingleResult();
@@ -148,7 +158,6 @@ public class EmployeeResource {
                 email.setEmployee(employee);
             });
         }
-        Thread.sleep(50000);
         entityManager.persist(employee);
         return Response.status(Status.CREATED).entity(employee).build();
     }

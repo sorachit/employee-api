@@ -1,22 +1,15 @@
 package th.co.cdgs.employee;
 
-import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
-import jakarta.persistence.PrePersist;
-import jakarta.transaction.Transactional;
 import th.co.cdgs.running.RunningSeq;
 
 @ApplicationScoped
 public class RunningSrevice {
-
     @Inject
     EntityManager entityManager;
-
-
     public Integer next(String entityClassName) {
         RunningSeq entity = entityManager
                 .createQuery(" from RunningSeq where entityClass = :entityClass",
@@ -27,6 +20,4 @@ public class RunningSrevice {
                 .getSingleResult();
         return entity.incrementSequence();
     }
-
-
 }
