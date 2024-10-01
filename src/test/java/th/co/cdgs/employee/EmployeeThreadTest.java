@@ -32,18 +32,41 @@ class EmployeeThreadTest {
                                 ObjectMapper objectMapper = new ObjectMapper();
                                 Employee employee = objectMapper.readValue(future.get(),
                                                 Employee.class);
-                                                System.out.println(employee);
+                                System.out.println(employee);
                                 employees.add(employee);
                         }
                         // เรียงลำดับ
                         employees.sort(Comparator.comparingInt(Employee::getSeqNo));
                         // assert seqNo ต้องเรียงลำดับ
                         IntStream.range(0, employees.size())
-                        .forEach(i -> assertEquals(i+15, employees.get(i).getSeqNo()));
+                                        .forEach(i -> assertEquals(i + 15, employees.get(i).getSeqNo()));
                 } catch (Exception e) {
                         e.printStackTrace();
                 }
                 executor.shutdown(); // ปิด ExecutorService
         }
 
+        
+
+        @Test
+        void createEmployeeMaxSeqThread() {
+                ExecutorService executor = Executors.newFixedThreadPool(10); // สร้าง Thread Pool
+                List<Callable<String>> callables = new ArrayList<>();
+                for (int i = 0; i < 10; i++) {
+                        callables.add(new CreateEmployeeThread("/employee/createMaxSeq"));
+                }
+                try {
+                        // รอให้ task ทั้งหมดเสร็จ
+                        List<Future<String>> futures = executor.invokeAll(callables);
+                        for (Future<String> future : futures) {
+                                ObjectMapper objectMapper = new ObjectMapper();
+                                Employee employee = objectMapper.readValue(future.get(),
+                                                Employee.class);
+                                                System.out.println(employee);
+                        }
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+                executor.shutdown(); // ปิด ExecutorService
+        }
 }
