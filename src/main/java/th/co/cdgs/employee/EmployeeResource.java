@@ -166,18 +166,7 @@ public class EmployeeResource {
     @POST
     @Transactional
     public Response create(Employee employee) {
-        auditLogService.logCreation(new AuditLog("Create Employee", employee.toString()));
-        if (employee.getId() != null) {
-            employee.setId(null);
-        }
-        if (employee.getEmail() != null) {
-            employee.getEmail().forEach(email -> {
-                email.setEmployee(employee);
-            });
-        }
-        employee.setSeqNo(runningSrevice.next(Employee.class.getName()));
-        entityManager.persist(employee);
-        return Response.status(Status.CREATED).entity(employee).build();
+        return Response.status(Status.CREATED).entity(employeeService.create(employee)).build();
     }
 
     @PUT
