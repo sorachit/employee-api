@@ -6,7 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 
 @ApplicationScoped
-public class RunningSrevice {
+public class RunningService {
     @Inject
     EntityManager entityManager;
     public Integer next(String entityClassName) {

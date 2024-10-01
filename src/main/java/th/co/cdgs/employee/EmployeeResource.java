@@ -25,7 +25,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import th.co.cdgs.auditlog.AuditLog;
 import th.co.cdgs.auditlog.AuditLogService;
-import th.co.cdgs.running.RunningSrevice;
+import th.co.cdgs.running.RunningService;
 
 @Path("employee")
 @ApplicationScoped
@@ -40,7 +40,7 @@ public class EmployeeResource {
     AuditLogService auditLogService;
 
     @Inject
-    RunningSrevice runningSrevice;
+    RunningService runningSrevice;
 
     @GET
     public List<Employee> get() {

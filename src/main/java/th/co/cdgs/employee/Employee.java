@@ -17,10 +17,10 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 import th.co.cdgs.department.Department;
-import th.co.cdgs.running.RunningSrevice;
+import th.co.cdgs.running.RunningService;
 @Entity
 @Table(name = "employee")
-@EntityListeners(RunningSrevice.class)
+@EntityListeners(RunningService.class)
 public class Employee {    
     @Id
     @SequenceGenerator(name = "employeeSequence", sequenceName = "employee_id_seq",
