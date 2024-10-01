@@ -10,13 +10,14 @@ import jakarta.persistence.UniqueConstraint;
 @Table(name = "running_seq",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"entity_class", "current_sequence"})})
 public class RunningSeq {
-
     @Id
     @Column(name = "entity_class")
     private String entityClass;
     @Column(name = "current_sequence" , nullable = false)
     private int currentSequence;
-
+    public Integer incrementSequence() {
+       return ++this.currentSequence;
+    }
     public int getCurrentSequence() {
         return currentSequence;
     }
@@ -29,8 +30,4 @@ public class RunningSeq {
     public void setEntityClass(String entityClass) {
         this.entityClass = entityClass;
     }
-    public Integer incrementSequence() {
-       return ++this.currentSequence;
-    }
-
 }
