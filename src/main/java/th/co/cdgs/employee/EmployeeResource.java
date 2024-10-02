@@ -165,7 +165,7 @@ public class EmployeeResource {
     @Transactional
     public Response changeDepartment(Employee request) {
         Employee entity = entityManager.createQuery(
-                "from Employee e join fetch e.department join fetch e.email where e.id = :id",
+                "from Employee e left join fetch e.department left join fetch e.email where e.id = :id",
                 Employee.class).setParameter("id", request.getId()).getSingleResult();
         // ตรวจสอบ version
         if (!Objects.equals(entity.getVersion(), request.getVersion())) {
