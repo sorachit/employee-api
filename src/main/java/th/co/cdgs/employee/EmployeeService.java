@@ -19,7 +19,7 @@ public class EmployeeService {
     AuditLogService auditLogService;
 
     @Inject
-    RunningSrevice runningSrevice;
+    RunningService runningSrevice;
 
     @Transactional(TxType.NOT_SUPPORTED)
     public Employee find(Integer id) {

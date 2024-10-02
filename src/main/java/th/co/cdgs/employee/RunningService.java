@@ -7,7 +7,7 @@ import jakarta.persistence.LockModeType;
 import th.co.cdgs.running.RunningSeq;
 
 @ApplicationScoped
-public class RunningSrevice {
+public class RunningService {
     @Inject
     EntityManager entityManager;
     public Integer next(String entityClassName) {
