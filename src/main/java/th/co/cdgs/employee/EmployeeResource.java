@@ -40,7 +40,7 @@ public class EmployeeResource {
     AuditLogService auditLogService;
 
     @Inject
-    RunningService runningSrevice;
+    RunningService runningService;
 
     @GET
     public List<Employee> get() {
@@ -176,7 +176,7 @@ public class EmployeeResource {
                 email.setEmployee(employee);
             });
         }
-        employee.setSeqNo(runningSrevice.next(Employee.class.getName()));
+        employee.setSeqNo(runningService.next(Employee.class.getName()));
         entityManager.persist(employee);
         return Response.status(Status.CREATED).entity(employee).build();
     }
