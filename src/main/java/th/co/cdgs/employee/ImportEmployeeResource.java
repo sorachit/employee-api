@@ -55,41 +55,61 @@ public class ImportEmployeeResource {
     @POST
     @Transactional
     public Response importEmployee(MultipartFormDataInput input) throws IOException {
+        long start = System.currentTimeMillis();
         Map<String, Department> departmentMap = departmentService.getDepartmentMap();
         for (Entry<String, Collection<FormValue>> entry : input.getValues().entrySet()) {
             for (FormValue value : entry.getValue()) {
-                try (BufferedReader br = new BufferedReader(
-                        new InputStreamReader(value.getFileItem().getInputStream()))) {
-                    String line;
-                    boolean isFirstLine = true;
-                    int i = 0;
-                    while ((line = br.readLine()) != null) {
-                        if (isFirstLine) {
-                            isFirstLine = false;
-                            continue;
-                        }
-                        if (i > 0 && i % BATCH_SIZE == 0) {
-                            entityManager.flush();
-                            entityManager.clear();
-                        }
-                        String[] values = line.split(COMMA_DELIMITER);
-                        Employee employee = new Employee();
-                        employee.setFirstName(values[0]);
-                        employee.setLastName(values[1]);
-                        employee.setGender(values[2]);
-                        employee.setDepartment(departmentMap.get(values[3]));
-                        if (values.length > 4 && values[4] != null) {
-                            EmployeeEmail employeeEmail = new EmployeeEmail();
-                            employeeEmail.setEmail(values[4]);
-                            employeeEmail.setEmployee(employee);
-                            employee.addEmail(employeeEmail);
-                        }
-                        employeeService.create(employee);
-                    }
-                }
+                createEmployeeFromInputStream(departmentMap, value);
             }
         }
+        LOGGER.info("end time : " + (System.currentTimeMillis() - start));
         return Response.ok().build();
+    }
+
+    private void createEmployeeFromInputStream(Map<String, Department> departmentMap, FormValue value)
+            throws IOException {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(value.getFileItem().getInputStream()))) {
+            String line;
+            boolean isFirstLine = true;
+            int i = 0;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+                flush(i);
+                String[] values = line.split(COMMA_DELIMITER);
+                Employee employee = createEmployee(departmentMap, values);
+                createEmployeeEmail(values, employee);
+                employeeService.create(employee);
+            }
+        }
+    }
+
+    private Employee createEmployee(Map<String, Department> departmentMap, String[] values) {
+        Employee employee = new Employee();
+        employee.setFirstName(values[0]);
+        employee.setLastName(values[1]);
+        employee.setGender(values[2]);
+        employee.setDepartment(departmentMap.get(values[3]));
+        return employee;
+    }
+
+    private void createEmployeeEmail(String[] values, Employee employee) {
+        if (values.length > 4 && values[4] != null) {
+            EmployeeEmail employeeEmail = new EmployeeEmail();
+            employeeEmail.setEmail(values[4]);
+            employeeEmail.setEmployee(employee);
+            employee.addEmail(employeeEmail);
+        }
+    }
+
+    private void flush(int i) {
+        if (i > 0 && i % BATCH_SIZE == 0) {
+            entityManager.flush();
+            entityManager.clear();
+        }
     }
 
     @POST
