@@ -136,7 +136,7 @@ public class EmployeeResource {
     @POST
     @Path("/sleep")
     @Transactional
-    @TransactionConfiguration(timeout = 70000)
+    @TransactionConfiguration(timeout = 70)
     public Response sleep(Employee employee) throws InterruptedException {
         Thread.sleep(60000);
         entityManager.persist(employee);
