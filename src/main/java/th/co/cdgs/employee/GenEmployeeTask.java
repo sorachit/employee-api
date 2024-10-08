@@ -9,14 +9,11 @@ public class GenEmployeeTask implements Runnable {
     private EntityManager entityManager;
     private long start;
     private int i;
-    
-
     GenEmployeeTask(EntityManagerFactory entityManagerFactory, long start, int i) {
         this.entityManager = entityManagerFactory.createEntityManager();
         this.start = start;
         this.i = i;
     }
-
     @Override
     public void run() {
         this.entityManager.getTransaction().begin();
@@ -30,6 +27,4 @@ public class GenEmployeeTask implements Runnable {
             LOGGER.info(i + " current time : " + (System.currentTimeMillis() - start));
         }
     }
-
-
 }

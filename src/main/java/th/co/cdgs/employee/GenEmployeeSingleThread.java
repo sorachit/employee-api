@@ -6,13 +6,10 @@ import jakarta.persistence.EntityManagerFactory;
 
 public class GenEmployeeSingleThread implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(GenEmployeeSingleThread.class.getName());
-
     private EntityManager entityManager;
-
     GenEmployeeSingleThread(EntityManagerFactory entityManagerFactory) {
         this.entityManager = entityManagerFactory.createEntityManager();
     }
-
     @Override
     public void run() {
         long start = System.currentTimeMillis();
@@ -34,6 +31,4 @@ public class GenEmployeeSingleThread implements Runnable {
         entityManager.getTransaction().commit();
         LOGGER.info("end time : " + (System.currentTimeMillis() - start));
     }
-
-
 }
