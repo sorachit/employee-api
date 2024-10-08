@@ -1,5 +1,9 @@
 INSERT INTO department(code, name) VALUES (1, 'Mavel');
 INSERT INTO department(code, name) VALUES (2, 'DC');
+INSERT INTO department(code, name) VALUES (3, 'Gryffindor');
+INSERT INTO department(code, name) VALUES (4, 'Slytherin');
+INSERT INTO department(code, name) VALUES (5, 'Ravenclaw');
+INSERT INTO department(code, name) VALUES (6, 'Hufflepuff');
 
 INSERT INTO employee(id,seq_no, first_name,last_name,gender,department,version) VALUES (1, 1, 'Tony','Stark','M',1,0);
 INSERT INTO employee(id,seq_no, first_name,last_name,gender,department,version) VALUES (2, 2, 'Bruce' , 'Wayne' , 'M' , 2,1);

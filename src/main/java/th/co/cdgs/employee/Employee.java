@@ -1,6 +1,7 @@
 package th.co.cdgs.employee;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -129,6 +130,13 @@ public class Employee {
         this.endRegisterDate = endRegisterDate;
     }
 
+    public void addEmail(EmployeeEmail employeeEmail) {
+        if (email == null) {
+            email = new HashSet<>();
+        }
+        email.add(employeeEmail);
+    }
+
     public Set<EmployeeEmail> getEmail() {
         return email;
     }
@@ -147,10 +155,8 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "{" + "\"id\"=\"" + id + "\"," + ", \"firstName\"=\"" + firstName + "\","
-                + ", \"lastName\"=\"" + lastName + "\"," + ", \"gender\"=\"" + gender + "\","
-                + ", \"seqNo\"=\"" + seqNo + "\","
-                + ", \"department\"=\"" + department + '}';
+        return "{" + "\"id\"=\"" + id +  ", \"firstName\"=\"" + firstName 
+                + ", \"lastName\"=\"" + lastName + ", \"gender\"=\"" + gender +  ", \"seqNo\"=\"" + seqNo + ", \"department\"=\"" + department + '}';
     }
 
 
