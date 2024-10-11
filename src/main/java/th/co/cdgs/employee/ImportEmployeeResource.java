@@ -19,20 +19,17 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.server.multipart.FormValue;
 import org.jboss.resteasy.reactive.server.multipart.MultipartFormDataInput;
 import io.quarkus.narayana.jta.runtime.TransactionConfiguration;
-import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import th.co.cdgs.department.Department;
 import th.co.cdgs.department.DepartmentService;
+import th.co.cdgs.ws.ProcessSocket;
 
 @Path("import")
 @ApplicationScoped
@@ -51,6 +48,9 @@ public class ImportEmployeeResource {
 
     @Inject
     EntityManagerFactory entityManagerFactory; // ใช้ EntityManagerFactory เพื่อสร้าง EntityManager ใหม่ในแต่ละ thread
+
+    @Inject
+    ProcessSocket processSocket;
 
     @POST
     @Transactional
@@ -139,9 +139,9 @@ public class ImportEmployeeResource {
 
     
     @POST
-    @Path("/genAsyncSignle")
-    public Response genAsyncSignle() {
-        Thread thread = new Thread(new GenEmployeeSingleThread(entityManagerFactory));
+    @Path("/genAsyncSignle/{username}")
+    public Response genAsyncSignle(String username) {
+        Thread thread = new Thread(new GenEmployeeSingleThread(username , entityManagerFactory , processSocket));
         thread.start();
         return Response.ok().build();
     }
