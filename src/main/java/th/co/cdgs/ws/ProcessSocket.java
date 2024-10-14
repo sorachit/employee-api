@@ -17,7 +17,7 @@ import th.co.cdgs.employee.ImportEmployeeResource;
 @ServerEndpoint("/process/{username}")
 @Singleton
 public class ProcessSocket {
-   
+
 
     private static final Logger LOG = Logger.getLogger(ProcessSocket.class);
 
@@ -37,19 +37,23 @@ public class ProcessSocket {
     }
 
     @OnError
-    public void onError(Session session, @PathParam("username") String username, Throwable throwable) {
+    public void onError(Session session, @PathParam("username") String username,
+            Throwable throwable) {
         sessions.remove(username);
     }
 
     @OnMessage
     public void onMessage(String message, @PathParam("username") String username) {
-        if("gen".equals(message)){
+        if ("gen".equals(message)) {
             importEmployeeResource.genAsyncSignle(username);
         }
     }
 
     public void sendMessage(String user, String message) {
-        sessions.get(user).getAsyncRemote().sendObject(message);
+        Session session = sessions.get(user);
+        if (session != null) {
+            session.getAsyncRemote().sendObject(message);
+        }
     }
 
 }

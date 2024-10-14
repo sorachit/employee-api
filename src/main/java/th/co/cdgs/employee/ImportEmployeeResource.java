@@ -24,11 +24,14 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import th.co.cdgs.department.Department;
 import th.co.cdgs.department.DepartmentService;
+import th.co.cdgs.process.ImportProcess;
+import th.co.cdgs.process.ProcessStatus;
 import th.co.cdgs.ws.ProcessSocket;
 
 @Path("import")
@@ -137,22 +140,37 @@ public class ImportEmployeeResource {
         return Response.ok().build();
     }
 
+    @GET
+    @Path("/status/{username}")
+    public Response status(String username) {
+        ImportProcess importProcess = entityManager.find(ImportProcess.class, username);
+        return Response.ok().entity(importProcess).build();
+    }
+
     
     @POST
     @Path("/genAsyncSignle/{username}")
     public Response genAsyncSignle(String username) {
-        Thread thread = new Thread(new GenEmployeeSingleThread(username , entityManagerFactory , processSocket));
+        Thread thread = new Thread(
+                new GenEmployeeSingleThread(username, entityManagerFactory, processSocket));
         thread.start();
         return Response.ok().build();
     }
 
+    public void status(ProcessStatus status , String username) {
+        entityManager.getTransaction().begin();
+        entityManager.merge(new ImportProcess(username, status));
+        entityManager.getTransaction().commit();
+    }
+
     @POST
-    @Path("/genAsync")
-    public Response genAsync() {
+    @Path("/genAsync/{username}")
+    public Response genAsync(String username) {
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         long start = System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
-            executorService.submit(new GenEmployeeTask(entityManagerFactory, start, i));
+        int loop = 1000000;
+        for (int i = 0; i < loop; i++) {
+            executorService.submit(new GenEmployeeTask(entityManagerFactory ,processSocket, username, start, i , loop));
         }
         return Response.ok().build();
     }
