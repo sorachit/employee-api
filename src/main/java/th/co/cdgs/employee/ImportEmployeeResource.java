@@ -31,15 +31,15 @@ import jakarta.ws.rs.core.Response;
 import th.co.cdgs.department.Department;
 import th.co.cdgs.department.DepartmentService;
 import th.co.cdgs.process.ImportProcess;
-import th.co.cdgs.process.ProcessStatus;
 import th.co.cdgs.ws.ProcessSocket;
 
 @Path("import")
 @ApplicationScoped
 public class ImportEmployeeResource {
+    private static final int LOOP = 1000000;
     private static final Logger LOGGER = Logger.getLogger(ImportEmployeeResource.class.getName());
     private static final String COMMA_DELIMITER = ",";
-    private static final int BATCH_SIZE = 100;
+    private static final int BATCH_SIZE = 1000;
     @Inject
     EmployeeService employeeService;
 
@@ -54,6 +54,13 @@ public class ImportEmployeeResource {
 
     @Inject
     ProcessSocket processSocket;
+
+    @Inject
+    RedisEmployeeService redisEmployeeService;
+
+    @Inject
+    RedisTxEmployeeService redisTxEmployeeService;
+    
 
     @POST
     @Transactional
@@ -121,8 +128,8 @@ public class ImportEmployeeResource {
     @TransactionConfiguration(timeout = 120)
     public Response gen() {
         long start = System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
-            if (i > 0 && i % 1000 == 0) {
+        for (int i = 0; i < LOOP; i++) {
+            if (i > 0 && i % BATCH_SIZE == 0) {
                 entityManager.flush();
                 entityManager.clear();
             }
@@ -157,20 +164,53 @@ public class ImportEmployeeResource {
         return Response.ok().build();
     }
 
-    public void status(ProcessStatus status , String username) {
-        entityManager.getTransaction().begin();
-        entityManager.merge(new ImportProcess(username, status));
-        entityManager.getTransaction().commit();
-    }
-
     @POST
     @Path("/genAsync/{username}")
     public Response genAsync(String username) {
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         long start = System.currentTimeMillis();
-        int loop = 1000000;
-        for (int i = 0; i < loop; i++) {
-            executorService.submit(new GenEmployeeTask(entityManagerFactory ,processSocket, username, start, i , loop));
+        for (int i = 0; i < LOOP; i++) {
+            executorService.submit(new GenEmployeeTask(entityManagerFactory, processSocket, username, start, i, LOOP));
+        }
+        return Response.ok().build();
+    }
+    
+
+    @POST
+    @Path("/redis")
+    public Response redis() {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < LOOP; i++) {
+            Employee employee = new Employee();
+            employee.setId(i);
+            employee.setFirstName("FirstName" + i);
+            employee.setLastName("LastName" + i);
+            employee.setGender("M");
+            redisEmployeeService.set(employee);
+            if (i % BATCH_SIZE == 0) {
+                LOGGER.info(i + " current time : " + (System.currentTimeMillis() - start));
+            }
+        }
+        LOGGER.info("end time : " + (System.currentTimeMillis() - start));
+        return Response.ok().build();
+    }
+
+
+    @POST
+    @Path("/redis-tx")
+    public Response redisTx() {
+        redisTxEmployeeService.process();
+        return Response.ok().build();
+    }
+    
+
+    @POST
+    @Path("/redis-async")
+    public Response redisAsync() {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < LOOP; i++) {
+            executorService.submit(new RedisEmployeeTask(redisEmployeeService, start, i, LOOP));
         }
         return Response.ok().build();
     }
