@@ -17,7 +17,7 @@ class RedisTxEmployeeService {
     private static final int LOOP = 1000000;
     private static final int BATCH_SIZE = 1000;
     @Inject
-    ReactiveRedisDataSource ds;
+    ReactiveRedisDataSource reactiveRedisDataSource;
 
     @Inject
     RedisDataSource redisDataSource;
@@ -37,6 +37,29 @@ class RedisTxEmployeeService {
                     LOGGER.info(i + " current time : " + (System.currentTimeMillis() - start));
                 }
             }
+        });
+        
+        LOGGER.info("end time : " + (System.currentTimeMillis() - start));
+    }
+
+
+    public void processRx() {
+        long start = System.currentTimeMillis();
+        Uni<TransactionResult> result = reactiveRedisDataSource.withTransaction(tx -> {
+            ReactiveTransactionalHashCommands<String, String, Employee> hash = tx.hash(Employee.class);
+            for (int i = 0; i < LOOP; i++) {
+                Employee employee = new Employee();
+                employee.setId(i);
+                employee.setFirstName("FirstName" + i);
+                employee.setLastName("LastName" + i);
+                employee.setGender("M");
+                if (i % BATCH_SIZE == 0) {
+                    LOGGER.info(i + " current time : " + (System.currentTimeMillis() - start));
+                }
+                hash.hset(Employee.class.getName(), String.valueOf(employee.getId()),
+                        employee);
+            }
+            return hash.hgetall(Employee.class.getName());
         });
         
         LOGGER.info("end time : " + (System.currentTimeMillis() - start));
